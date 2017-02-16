@@ -1,0 +1,25 @@
+<resources>
+
+    <dimen name="activity_horizontal_margin">32dp</dimen>
+    <dimen name="activity_vertical_margin">32dp</dimen>
+
+    <dimen name="header_image_height">452dp</dimen>
+    <dimen name="thumbnail_height">160dp</dimen>
+
+    <dimen name="margin_minute">2dp</dimen>
+    <dimen name="margin_tiny">8dp</dimen>
+    <dimen name="margin_small">20dp</dimen>
+    <dimen name="margin_medium">40dp</dimen>
+    <dimen name="margin_large">60dp</dimen>
+    <dimen name="margin_huge">92dp</dimen>
+
+    <dimen name="text_size_small">22sp</dimen>
+    <dimen name="text_size_small_upper">26sp</dimen>
+    <dimen name="text_size_medium_lower">32sp</dimen>
+    <dimen name="text_size_medium">34sp</dimen>
+    <dimen name="text_size_medium_upper">40sp</dimen>
+    <dimen name="text_size_large">48sp</dimen>
+    <dimen name="text_size_very_large">62sp</dimen>
+    <dimen name="text_size_huge">78sp</dimen>
+
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/magazineHeaderLayout" android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small" android:background="@drawable/background_tile" >
+
+    <TextView
+        android:id="@+id/textViewHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingLeft="@dimen/margin_medium"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/black" />
+
+</LinearLayout>

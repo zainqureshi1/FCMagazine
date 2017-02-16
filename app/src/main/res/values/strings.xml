@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">FC Magazine</string>
+
+    <string name="motto">Where fashion comes first!</string>
+
+    <string name="splash_heading_1">FASHION PAKISTAN</string>
+    <string name="splash_heading_2">LIVING &amp; LIFESTYLE</string>
+    <string name="splash_heading_3">PEOPLE &amp; PARTIES</string>
+    <string name="splash_heading_4">BEAUTY &amp; STYLE</string>
+    <string name="splash_heading_5">INT\'L FASHION</string>
+    <string name="splash_heading_6">MEN\'S CORNER</string>
+    <string name="splash_heading_7">COLLECTIONS</string>
+    <string name="splash_heading_8">MAGAZINE</string>
+    <string name="splash_heading_9">SHOPPING</string>
+    <string name="splash_heading_10">TRAVEL</string>
+
+    <string name="latest_issue">LATEST ISSUE</string>
+    <string name="recent_issues">RECENT ISSUES</string>
+    <string name="downloaded">DOWNLOADED</string>
+
+    <string name="press_back_again_to_exit">Press BACK again to exit</string>
+</resources>
