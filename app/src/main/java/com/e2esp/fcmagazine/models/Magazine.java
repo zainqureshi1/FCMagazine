@@ -16,12 +16,21 @@ public class Magazine implements Parcelable {
     private int pageCount;
 
     private Bitmap cover;
+    private boolean spaceFiller;
 
     public Magazine(String name, String filePath, int imageRes, int pageCount) {
         this.name = name;
         this.filePath = filePath;
         this.imageRes = imageRes;
         this.pageCount = pageCount;
+    }
+
+    public Magazine(boolean spaceFiller) {
+        this.name = "";
+        this.filePath = "";
+        this.imageRes = -1;
+        this.pageCount = -1;
+        this.spaceFiller = spaceFiller;
     }
 
     public Magazine(Parcel in) {
@@ -54,6 +63,10 @@ public class Magazine implements Parcelable {
 
     public void setCover(Bitmap cover) {
         this.cover = cover;
+    }
+
+    public boolean isSpaceFiller() {
+        return spaceFiller;
     }
 
     @Override

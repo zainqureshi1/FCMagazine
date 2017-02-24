@@ -183,14 +183,19 @@ public class MagazineRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         public void bindView(final Magazine magazine) {
-            imageViewCover.setImageResource(magazine.getImageRes());
-            textViewName.setText(magazine.getName());
-            topView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onMagazineClickListener.onMagazineClick(magazine);
-                }
-            });
+            if (magazine.isSpaceFiller()) {
+                imageViewCover.setVisibility(View.INVISIBLE);
+                textViewName.setVisibility(View.INVISIBLE);
+            } else {
+                imageViewCover.setImageResource(magazine.getImageRes());
+                textViewName.setText(magazine.getName());
+                topView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onMagazineClickListener.onMagazineClick(magazine);
+                    }
+                });
+            }
         }
 
     }
