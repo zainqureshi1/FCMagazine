@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         magazinesListRecent.clear();
         magazinesListRecent.add(new Magazine("JAN 2017", "issue39/%s.jpg", R.drawable.magazine_cover_1, 56));
-        //magazinesListRecent.add(new Magazine("DEC 2016", "issue39/%s.jpg", R.drawable.magazine_cover_2, 54));
+        magazinesListRecent.add(new Magazine("DEC 2016", "issue38/%s.jpg", R.drawable.magazine_cover_2, 54));
         //magazinesListRecent.add(new Magazine("NOV 2016", "issue39/%s.jpg", R.drawable.magazine_cover_3, 54));
         //magazinesListRecent.add(new Magazine("OCT 2016", "issue39/%s.jpg", R.drawable.magazine_cover_4, 54));
 
