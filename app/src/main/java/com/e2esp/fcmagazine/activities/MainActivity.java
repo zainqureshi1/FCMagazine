@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        startActivity(new Intent(this, SplashActivity.class));
+        //startActivity(new Intent(this, SplashActivity.class));
 
         setContentView(R.layout.activity_main);
         setupView();
@@ -93,13 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMagazines() {
         magazinesListLatest.clear();
-        magazinesListLatest.add(new Magazine("Latest Issue FEB 2017", "issue40/%s.jpg", R.drawable.latest_issue_cover, 58));
+        magazinesListLatest.add(new Magazine("Latest Issue MARCH 2017", "issue41/%s.jpg", R.drawable.latest_issue_cover, 76));
 
         magazinesListRecent.clear();
-        magazinesListRecent.add(new Magazine("JAN 2017", "issue39/%s.jpg", R.drawable.magazine_cover_1, 56));
-        magazinesListRecent.add(new Magazine("DEC 2016", "issue38/%s.jpg", R.drawable.magazine_cover_2, 54));
-        //magazinesListRecent.add(new Magazine("NOV 2016", "issue39/%s.jpg", R.drawable.magazine_cover_3, 54));
-        //magazinesListRecent.add(new Magazine("OCT 2016", "issue39/%s.jpg", R.drawable.magazine_cover_4, 54));
+        magazinesListRecent.add(new Magazine("FEB 2017", "issue40/%s.jpg", R.drawable.magazine_cover_1, 58));
+        magazinesListRecent.add(new Magazine("JAN 2017", "issue39/%s.jpg", R.drawable.magazine_cover_2, 56));
 
         magazinesListDownloaded.clear();
         //magazinesListDownloaded.add(new Magazine("AUG 2016", "issue39/%s.jpg", R.drawable.magazine_cover_5, 54));
