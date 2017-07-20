@@ -2,26 +2,33 @@ package com.e2esp.fcmagazine.activities;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
 import com.e2esp.fcmagazine.R;
 import com.e2esp.fcmagazine.adapters.MagazineRecyclerAdapter;
 import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
 import com.e2esp.fcmagazine.models.Magazine;
 import com.e2esp.fcmagazine.utils.Consts;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -39,11 +46,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewTitle;
     private View viewOverlayWaker;
 
+    private final static String DROPBOX_FILE_DIR = "/FC Magazine/";
+
+    private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
+    private FileMetadata mSelectedFile;
+
+    private DbxRequestConfig config = null;
+    DbxClientV2 client = null;
+
     private Animation animationTitleIn;
     private Animation animationTitleOut;
+    public static int coverPagesInDropbox;
+    public static int coverPagesInStorage;
 
     private boolean overlayVisible = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +77,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupView() {
+
+
+        config = DbxRequestConfig.newBuilder("FC Magazine").build();
+        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
+        client = new DbxClientV2(config, ACCESS_TOKEN);
+
+
+        GetFolderList folderList = new GetFolderList(MainActivity.this, client, new GetFolderList.Callback() {
+
+            @Override
+            public void onDownloadComplete(Integer result) {
+
+                coverPagesInDropbox = result;
+                //int cover = coverPagesInDropbox;
+                DownloadCoverPages(coverPagesInStorage,coverPagesInDropbox);
+                //Toast.makeText(MainActivity.this, "Cover Pages " + coverPagesInDropbox, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        folderList.execute();
+        /*int length = new File("Dropbox").listFiles().length;*/
+
+        File dir = new File(Environment.getExternalStorageDirectory(), "Dropbox/Cover Pages");
+        coverPagesInStorage = countFilesInDirectory(dir);
+        //Toast.makeText(this, "Number of Cover Pages " +coverPagesInStorage, Toast.LENGTH_LONG).show();
+
         recyclerViewMagazines = (RecyclerView) findViewById(R.id.recyclerViewMagazines);
         magazinesListLatest = new ArrayList<>();
         magazinesListRecent = new ArrayList<>();
@@ -89,6 +137,45 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    //count number of cover pages
+    public static int countFilesInDirectory(File directory) {
+        int count = 0;
+        for (File file : directory.listFiles()) {
+            if (file.isFile()) {
+                count++;
+            }
+            if (file.isDirectory()) {
+                count += countFilesInDirectory(file);
+            }
+        }
+        return count;
+    }
+
+    //download cover pages
+    public void DownloadCoverPages(int coverPagesInStorage, int coverPagesInDropbox){
+
+        if(coverPagesInStorage != coverPagesInDropbox){
+
+            DownloadCoverPage downloadCoverPage = new DownloadCoverPage(MainActivity.this, client, new DownloadCoverPage.Callback() {
+
+                @Override
+                public void onDownloadComplete(File result) {
+                    //Toast.makeText(Download.this, "Downloaded" + result, Toast.LENGTH_SHORT).show();
+                    Log.d("Download Complete", "onDownloadComplete: " +result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+            downloadCoverPage.execute();
+
+        }
+        
     }
 
     private void loadMagazines() {

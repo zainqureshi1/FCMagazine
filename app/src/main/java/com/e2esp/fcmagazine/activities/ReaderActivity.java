@@ -1,5 +1,6 @@
 package com.e2esp.fcmagazine.activities;
 
+import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
 import com.e2esp.fcmagazine.R;
 import com.e2esp.fcmagazine.adapters.PageAdapter;
 import com.e2esp.fcmagazine.views.foldable.FoldableListLayout;
@@ -24,6 +30,7 @@ import com.e2esp.fcmagazine.models.Page;
 import com.e2esp.fcmagazine.utils.Consts;
 import com.e2esp.fcmagazine.utils.Utility;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -50,16 +57,34 @@ public class ReaderActivity extends AppCompatActivity {
 
     private Magazine magazine;
     private int selectedPage = 0;
+    private int CoverPage = 0;
     private int pendingPageRotation;
+    private Button download;
+    private TextView folderName;
 
     private int screenWidth;
     private boolean overlayVisible = true;
+
+    private final static String DROPBOX_FILE_DIR = "/FC Magazine/";
+
+    private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
+    private FileMetadata mSelectedFile;
+
+    private DbxRequestConfig config = null;
+    DbxClientV2 client = null;
+    private Button uploadFileBtn;
+    private int length =0 ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_reader);
+
+        download = (Button) findViewById(R.id.download);
+        folderName = (TextView) findViewById(R.id.folderName);
+
 
         magazine = getIntent().getParcelableExtra(Consts.EXTRA_MAGAZINE);
         if (magazine == null) {
@@ -72,8 +97,9 @@ public class ReaderActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                loadPages();
-                loadThumbnails();
+                loadCoverPage();
+                //loadPages();
+                //loadThumbnails();
                 createOverlayAnimations();
                 if (pendingPageRotation > 0) {
                     foldableListLayout.scrollToPosition(pendingPageRotation, 50);
@@ -82,6 +108,34 @@ public class ReaderActivity extends AppCompatActivity {
                 overlaySleepTimer.start();
             }
         }, 100);
+    }
+
+    public void downloadClick(View view){
+
+        /*Intent intent = new Intent(this, Download.class);
+        startActivity(intent);*/
+
+        config = DbxRequestConfig.newBuilder("FC Magazine").build();
+        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
+        client = new DbxClientV2(config, ACCESS_TOKEN);
+
+        DownloadFileTask downloadFile = new DownloadFileTask(ReaderActivity.this, client, new DownloadFileTask.Callback() {
+
+            @Override
+            public void onDownloadComplete(File result) {
+                Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+                Toast.makeText(ReaderActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        downloadFile.execute();
+
+
+
     }
 
     private void setupView() {
@@ -128,6 +182,18 @@ public class ReaderActivity extends AppCompatActivity {
         }
         pageAdapter.notifyDataSetChanged();
     }
+
+    private void loadCoverPage() {
+        pages.clear();
+        String imagePath = String.format(magazine.getFilePath(),1);
+        pages.add(new Page(imagePath, CoverPage==1));
+
+        download.setVisibility(View.VISIBLE);
+        folderName.setVisibility(View.VISIBLE);
+        folderName.setText(magazine.getFilePath());
+        pageAdapter.notifyDataSetChanged();
+    }
+
 
     private void loadThumbnails() {
         linearLayoutThumbnailsContainer.removeAllViews();
