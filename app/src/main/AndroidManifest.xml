@@ -49,6 +49,6 @@
 
 
         <!--<activity android:name="com.e2esp.fcmagazine.activities.Download"/>-->
-         </application>
+    </application>
 
 </manifest>

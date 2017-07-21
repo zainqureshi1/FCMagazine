@@ -97,7 +97,7 @@ public class DownloadCoverPage extends AsyncTask<FileMetadata, Void, File> {
         while (true) {
             for (Metadata metadata : result.getEntries()) {
 
-                File path = new File(dir, i+".jpg");
+                File path = new File(dir, metadata.getName());
                 i++;
 
                 OutputStream downloadFile = null;
@@ -125,7 +125,7 @@ public class DownloadCoverPage extends AsyncTask<FileMetadata, Void, File> {
 
                 }
 
-                Log.d("Path ","File Name " +metadata.getPathLower());
+                Log.d("Path ","File Name " +metadata.getName());
                 //System.out.println(metadata.getPathLower());
             }
 

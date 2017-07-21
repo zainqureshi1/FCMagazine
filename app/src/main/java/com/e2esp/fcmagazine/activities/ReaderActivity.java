@@ -2,6 +2,7 @@ package com.e2esp.fcmagazine.activities;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.e2esp.fcmagazine.R;
 import com.e2esp.fcmagazine.adapters.PageAdapter;
+import com.e2esp.fcmagazine.models.Magazines;
 import com.e2esp.fcmagazine.views.foldable.FoldableListLayout;
 import com.e2esp.fcmagazine.models.Magazine;
 import com.e2esp.fcmagazine.models.Page;
@@ -38,6 +40,8 @@ import java.util.ArrayList;
  */
 
 public class ReaderActivity extends AppCompatActivity {
+
+    public static Magazines magazines;
 
     private FoldableListLayout foldableListLayout;
     private ArrayList<Page> pages;
@@ -55,8 +59,8 @@ public class ReaderActivity extends AppCompatActivity {
     private Animation animationThumbnailsIn;
     private Animation animationThumbnailsOut;
 
-    private Magazine magazine;
-    private int selectedPage = 0;
+    //private Magazines magazine;
+    private int selectedPage = 1;
     private int CoverPage = 0;
     private int pendingPageRotation;
     private Button download;
@@ -72,8 +76,10 @@ public class ReaderActivity extends AppCompatActivity {
 
     private DbxRequestConfig config = null;
     DbxClientV2 client = null;
-    private Button uploadFileBtn;
+    //private Button uploadFileBtn;
     private int length =0 ;
+    private ImageView selectedMagazine;
+
 
 
     @Override
@@ -83,11 +89,10 @@ public class ReaderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reader);
 
         download = (Button) findViewById(R.id.download);
-        folderName = (TextView) findViewById(R.id.folderName);
+        download.setVisibility(View.VISIBLE);
+        //folderName = (TextView) findViewById(R.id.folderName);
 
-
-        magazine = getIntent().getParcelableExtra(Consts.EXTRA_MAGAZINE);
-        if (magazine == null) {
+        if (magazines == null) {
             finish();
             return;
         }
@@ -97,7 +102,7 @@ public class ReaderActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                loadCoverPage();
+                //loadCoverPage();
                 //loadPages();
                 //loadThumbnails();
                 createOverlayAnimations();
@@ -119,10 +124,19 @@ public class ReaderActivity extends AppCompatActivity {
         //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
 
+
         DownloadFileTask downloadFile = new DownloadFileTask(ReaderActivity.this, client, new DownloadFileTask.Callback() {
 
-            @Override
+            /*File dir = new File(Environment.getExternalStorageDirectory(), magazines.getName());
+            int coverPagesInStorage = countFilesInDirectory(dir);
+            */@Override
             public void onDownloadComplete(File result) {
+
+               /* selectedMagazine.setVisibility(View.GONE);
+                File dir = new File(Environment.getExternalStorageDirectory(), "Mar 2017");
+                int coverPagesInStorage = countFilesInDirectory(dir);
+                loadMagazine(dir,coverPagesInStorage);
+               */ //loadThumbnails();
                 Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
             }
 
@@ -146,7 +160,16 @@ public class ReaderActivity extends AppCompatActivity {
         foldableListLayout.setAdapter(pageAdapter);
 
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        textViewTitle.setText(magazine.getName());
+        selectedMagazine = (ImageView) findViewById(R.id.selectedMagazine);
+
+        selectedMagazine.setImageBitmap(magazines.getCover());
+        textViewTitle.setText(magazines.getName());
+
+        /*File dir = new File(Environment.getExternalStorageDirectory(), magazines.getName());
+        int coverPagesInStorage = countFilesInDirectory(dir);*/
+
+        //loadMagazine(dir,coverPagesInStorage);
+
         scrollViewThumbnailsContainer = (HorizontalScrollView) findViewById(R.id.scrollViewThumbnailsContainer);
         linearLayoutThumbnailsContainer = (LinearLayout) findViewById(R.id.linearLayoutThumbnailsContainer);
 
@@ -173,17 +196,51 @@ public class ReaderActivity extends AppCompatActivity {
         });
     }
 
-    private void loadPages() {
+    public static int countFilesInDirectory(File directory) {
+        int count = 0;
+        for (File file : directory.listFiles()) {
+            if (file.isFile()) {
+                Log.d("File: ", "Cover Page  " +file.getName());
+                count++;
+            }
+            if (file.isDirectory()) {
+                count += countFilesInDirectory(file);
+            }
+        }
+        return count;
+    }
+
+    private void loadMagazine(File dir, int coverPagesInStorage){
         pages.clear();
-        int pageCount = magazine.getPageCount();
+
+        int i = 0;
+        for (File file : dir.listFiles()){
+
+            file.getName();
+            String imagePath = String.format(file.getName(), i+1);
+            pages.add(new Page(imagePath, i == selectedPage));
+        }
+
+        //int pageCount=coverPagesInStorage;
+        /*for (int i = 0; i < coverPagesInStorage; i++) {
+            String imagePath = String.format(file.getName(), i+1);
+            pages.add(new Page(imagePath, i == selectedPage));
+        }*/
+        pageAdapter.notifyDataSetChanged();
+
+    }
+
+    /*private void loadPages() {
+        pages.clear();
+        //int pageCount = magazines.getPageCount();
         for (int i = 0; i < pageCount; i++) {
-            String imagePath = String.format(magazine.getFilePath(), i+1);
+            String imagePath = String.format(magazines.getFilePath(), i+1);
             pages.add(new Page(imagePath, i == selectedPage));
         }
         pageAdapter.notifyDataSetChanged();
-    }
+    }*/
 
-    private void loadCoverPage() {
+   /* private void loadCoverPage() {
         pages.clear();
         String imagePath = String.format(magazine.getFilePath(),1);
         pages.add(new Page(imagePath, CoverPage==1));
@@ -192,7 +249,7 @@ public class ReaderActivity extends AppCompatActivity {
         folderName.setVisibility(View.VISIBLE);
         folderName.setText(magazine.getFilePath());
         pageAdapter.notifyDataSetChanged();
-    }
+    }*/
 
 
     private void loadThumbnails() {

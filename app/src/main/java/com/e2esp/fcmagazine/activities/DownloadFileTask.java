@@ -74,12 +74,10 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
     protected File doInBackground(FileMetadata... params) {
 
 
-        String folder_main = "Dropbox";
-        File dir = new File(Environment.getExternalStorageDirectory(), folder_main +" Mar 2017");
+        String folder_main = "Mar 2017";
+        File dir = new File(Environment.getExternalStorageDirectory(), folder_main);
         dir.mkdir();
         int i=1;
-
-        //folderSize(dir);
 
         String folder = "/Mar 2017/";
 
@@ -139,17 +137,4 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
 
     }//function do in background end
 
-
-    /*public long folderSize(File directory) {
-
-        long length = 0;
-        for (File file : directory.listFiles()) {
-            if (file.isFile())
-                length += file.length();
-            else
-                length += folderSize(file);
-        }
-        Toast.makeText(mContext, "Length" +length, Toast.LENGTH_SHORT).show();
-        return length;
-    }*/
 }
