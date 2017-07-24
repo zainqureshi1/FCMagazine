@@ -72,12 +72,25 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(new Intent(this, SplashActivity.class));
 
         setContentView(R.layout.activity_main);
+
+        createDirs();
         setupView();
 
         loadMagazines();
 
         createOverlayAnimations();
         showOverlay();
+    }
+
+    private void createDirs() {
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
+        if (!dropboxDir.isDirectory()) {
+            dropboxDir.mkdir();
+        }
+        File coverPagesDir = new File(dropboxDir, "Cover Pages");
+        if (!coverPagesDir.isDirectory()) {
+            coverPagesDir.mkdir();
+        }
     }
 
     private void setupView() {
