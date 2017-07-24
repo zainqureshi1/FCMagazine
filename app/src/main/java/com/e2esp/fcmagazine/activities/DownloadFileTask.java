@@ -17,6 +17,7 @@ import com.dropbox.core.v2.DbxClientV2Base;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
+import com.e2esp.fcmagazine.models.Magazines;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,19 +27,22 @@ import java.io.OutputStream;
 
 import static android.R.attr.content;
 import static android.R.attr.path;
+import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
 
 /**
  * Created by Ali on 7/18/2017.
  */
 
-public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
+public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
 
     private static final String TAG = "DownLoadFile";
     private static ProgressDialog downloadProgress = null;
     private final Context mContext;
     private final DbxClientV2 mDbxClient;
     private final Callback mCallback;
+    //private Magazines magazines;
     private Exception mException;
+    //private String magazineName;
 
     public interface Callback {
         void onDownloadComplete(File result);
@@ -48,6 +52,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
 
     DownloadFileTask(Context context, DbxClientV2 dbxClient, Callback callback) {
         mContext = context;
+        //this.magazineName = magazineName;
         mDbxClient = dbxClient;
         mCallback = callback;
     }
@@ -73,13 +78,35 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
     @Override
     protected File doInBackground(FileMetadata... params) {
 
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
+        if (!dropboxDir.isDirectory()) {
+            dropboxDir.mkdir();
+        }
 
-        String folder_main = "Mar 2017";
+        String magazinesName = magazines.getName();
+
+        File magazinesDir = new File(dropboxDir, magazinesName);
+        if (!magazinesDir.isDirectory()) {
+            magazinesDir.mkdir();
+        }
+
+
+
+        /*String folder_main = "Mar 2017";
         File dir = new File(Environment.getExternalStorageDirectory(), folder_main);
-        dir.mkdir();
+        dir.mkdir();*/
         int i=1;
 
-        String folder = "/Mar 2017/";
+
+        //Toast.makeText(mContext, "Magazines Name " +magazinesname, Toast.LENGTH_SHORT).show();
+        Log.d("Magazines Name"," Magazines Name " + magazinesName);
+
+
+        //String folder = "/Mar 2017/";
+
+
+
+        String folder = "/" +magazinesName+ "/";
 
         ListFolderResult result = null;
         try {
@@ -90,7 +117,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata, Void, File> {
         while (true) {
             for (Metadata metadata : result.getEntries()) {
 
-                File path = new File(dir, i+".jpg");
+                File path = new File(magazinesDir,metadata.getName());
                 i++;
 
                 OutputStream downloadFile = null;

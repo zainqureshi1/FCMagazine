@@ -63,7 +63,7 @@ public class ReaderActivity extends AppCompatActivity {
     private int selectedPage = 1;
     private int CoverPage = 0;
     private int pendingPageRotation;
-    private Button download;
+    private Button downloadMagazine;
     private TextView folderName;
 
     private int screenWidth;
@@ -88,8 +88,8 @@ public class ReaderActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_reader);
 
-        download = (Button) findViewById(R.id.download);
-        download.setVisibility(View.VISIBLE);
+        downloadMagazine = (Button) findViewById(R.id.downloadMagazine);
+        downloadMagazine.setVisibility(View.VISIBLE);
         //folderName = (TextView) findViewById(R.id.folderName);
 
         if (magazines == null) {
@@ -117,13 +117,11 @@ public class ReaderActivity extends AppCompatActivity {
 
     public void downloadClick(View view){
 
-        /*Intent intent = new Intent(this, Download.class);
-        startActivity(intent);*/
-
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
         //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
 
+        //String magazineName = magazines.getName();
 
         DownloadFileTask downloadFile = new DownloadFileTask(ReaderActivity.this, client, new DownloadFileTask.Callback() {
 
@@ -137,6 +135,7 @@ public class ReaderActivity extends AppCompatActivity {
                 int coverPagesInStorage = countFilesInDirectory(dir);
                 loadMagazine(dir,coverPagesInStorage);
                */ //loadThumbnails();
+
                 Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
             }
 

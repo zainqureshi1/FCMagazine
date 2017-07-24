@@ -190,7 +190,8 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
             } else {
                 //int image = Integer.parseInt(magazine.getFilePath());
                 imageViewCover.setImageBitmap(magazine.getCover());
-                textViewName.setText(magazine.getName());
+                String magazineName = magazine.getName();
+                textViewName.setText(magazineName);
                 topView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -214,83 +215,3 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
     }
 
 }
-
-
-
-
-
-
-/*
-package com.e2esp.fcmagazine.adapters;
-
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.e2esp.fcmagazine.R;
-import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
-import com.e2esp.fcmagazine.models.Magazines;
-
-import java.util.ArrayList;
-
-*/
-/**
- * Created by Ali on 7/21/2017.
- *//*
-
-
-public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private Context context;
-    private ArrayList<Magazines> magazines;
-    private OnMagazineClickListener onMagazineClickListener;
-    private LayoutInflater layoutInflater;
-
-    public MagazineRecyclerAdapters(Context context, ArrayList<Magazines> magazines, OnMagazineClickListener onMagazineClickListener, LayoutInflater layoutInflater) {
-        this.context = context;
-        this.magazines = magazines;
-        this.onMagazineClickListener = onMagazineClickListener;
-        this.layoutInflater = layoutInflater;
-    }
-
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View view = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.show_cover_pages, parent, false);
-        return new MagazinesViewHolder(view);
-
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-
-        return magazines.size();
-    }
-
-    public class MagazinesViewHolder extends RecyclerView.ViewHolder {
-
-        private View topView;
-        private ImageView imageViewCover;
-        private TextView magazinesName;
-
-        public MagazinesViewHolder(View itemView) {
-            super(itemView);
-            topView = itemView;
-            imageViewCover = (ImageView) itemView.findViewById(R.id.imageViewMagazine);
-            magazinesName = (TextView) itemView.findViewById(R.id.magazineTitle);
-        }
-    }
-
-}
-*/

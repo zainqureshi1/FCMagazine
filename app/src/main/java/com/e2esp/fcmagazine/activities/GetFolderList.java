@@ -15,6 +15,8 @@ import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 
+import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
+
 
 public class GetFolderList extends AsyncTask<Object, Object, Integer> {
 
@@ -58,12 +60,20 @@ public class GetFolderList extends AsyncTask<Object, Object, Integer> {
     @Override
     protected Integer doInBackground(Object... params) {
 
-        String folder = "/Cover Pages/";
+
+        /*String magazinesName = magazines.getName();
+
+        if(magazinesName==null){
+
+            magazinesName = "/Cover Pages/";
+        }*/
+
+        String magazinesName = "/Cover Pages/";
 
         int count = 0;
         ListFolderResult result = null;
         try {
-            result = mDbxClient.files().listFolder(folder);
+            result = mDbxClient.files().listFolder(magazinesName);
         } catch (DbxException e) {
             e.printStackTrace();
         }

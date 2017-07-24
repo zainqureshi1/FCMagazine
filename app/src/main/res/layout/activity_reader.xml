@@ -58,20 +58,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--<TextView
-        android:id="@+id/folderName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Folder Name"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:textColor="@color/black"
-        android:layout_alignBottom="@+id/download"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="28dp"
-        android:layout_marginEnd="28dp"
-        android:layout_alignTop="@+id/download" />-->
 
     <ImageView
         android:id="@+id/selectedMagazine"
@@ -82,7 +68,7 @@
         />
 
     <Button
-        android:id="@+id/download"
+        android:id="@+id/downloadMagazine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -90,6 +76,7 @@
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@+id/progressBarLoading"
         android:layout_toRightOf="@+id/progressBarLoading"
+        android:visibility="gone"
         android:text="Download"
         android:onClick="downloadClick"/>
 
