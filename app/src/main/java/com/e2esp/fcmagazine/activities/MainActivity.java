@@ -24,6 +24,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
@@ -33,6 +34,7 @@ import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
 import com.e2esp.fcmagazine.models.Magazines;
 import com.e2esp.fcmagazine.utils.PermissionManager;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //startActivity(new Intent(this, SplashActivity.class));
