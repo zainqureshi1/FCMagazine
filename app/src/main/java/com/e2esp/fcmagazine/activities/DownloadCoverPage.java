@@ -60,7 +60,7 @@ public class DownloadCoverPage extends AsyncTask<FileMetadata, Void, File> {
     @Override
     protected void onPreExecute() {
         //Log.i("Async-Example", "onPreExecute Called");
-        downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Image",true);
+        downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Cover Pages",true);
 
     }
     @Override

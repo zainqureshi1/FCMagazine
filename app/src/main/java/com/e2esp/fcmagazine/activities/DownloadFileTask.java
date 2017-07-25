@@ -33,7 +33,7 @@ import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
  * Created by Ali on 7/18/2017.
  */
 
-public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
+public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
 
     private static final String TAG = "DownLoadFile";
     private static ProgressDialog downloadProgress = null;
@@ -60,7 +60,13 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
     @Override
     protected void onPreExecute() {
         //Log.i("Async-Example", "onPreExecute Called");
-        downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Image",true);
+        downloadProgress = new ProgressDialog(mContext);
+        //downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Magazine",true);
+        downloadProgress.setIndeterminate(false);
+        downloadProgress.setMessage("Downloading Magazine");
+        downloadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        downloadProgress.show();
+        super.onPreExecute();
 
     }
     @Override
@@ -90,27 +96,18 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
             magazinesDir.mkdir();
         }
 
-
-
-        /*String folder_main = "Mar 2017";
-        File dir = new File(Environment.getExternalStorageDirectory(), folder_main);
-        dir.mkdir();*/
-        int i=1;
-
-
-        //Toast.makeText(mContext, "Magazines Name " +magazinesname, Toast.LENGTH_SHORT).show();
+        int i=0;
         Log.d("Magazines Name"," Magazines Name " + magazinesName);
-
-
-        //String folder = "/Mar 2017/";
-
-
 
         String folder = "/" +magazinesName+ "/";
 
         ListFolderResult result = null;
+        int total = 0;
+        //int total = result.getEntries().size();
         try {
             result = mDbxClient.files().listFolder(folder);
+             total = result.getEntries().size();
+            publishProgress(i,total);
         } catch (DbxException e) {
             e.printStackTrace();
         }
@@ -139,6 +136,8 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
                 } finally {
                     try {
                         downloadFile.close();
+                        publishProgress(i, total);
+                        downloadProgress.setProgress(i);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -164,4 +163,11 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Void, File> {
 
     }//function do in background end
 
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+
+        downloadProgress.setProgress(values[0]);
+        downloadProgress.setMax(values[1]);
+    }
 }

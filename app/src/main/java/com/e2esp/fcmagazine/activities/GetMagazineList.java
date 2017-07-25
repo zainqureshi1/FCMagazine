@@ -1,9 +1,5 @@
 package com.e2esp.fcmagazine.activities;
 
-/**
- * Created by Ali on 7/20/2017.
- */
-
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,26 +10,41 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
+/*
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
+*/
 
 import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
 
+/**
+ * Created by Ali on 7/25/2017.
+ */
 
-public class GetFolderList extends AsyncTask<Object, Object, Integer> {
+public class GetMagazineList extends AsyncTask<Object, Object, Integer> {
 
-    private static final String TAG = "DownLoadFile";
-    private static ProgressDialog downloadProgress = null;
-    private final Context mContext;
-    private final DbxClientV2 mDbxClient;
-    private final Callback mCallback;
-    private Exception mException;
+private static final String TAG = "DownLoadFile";
+private static ProgressDialog downloadProgress = null;
+private final Context mContext;
+private final DbxClientV2 mDbxClient;
+private final Callback mCallback;
+private Exception mException;
 
-    public interface Callback {
-        void onDownloadComplete(Integer result);
+public interface Callback {
+    void onDownloadComplete(Integer result);
 
-        void onError(Exception e);
-    }
+    void onError(Exception e);
+}
 
-    GetFolderList(Context context, DbxClientV2 dbxClient, Callback callback) {
+    GetMagazineList(Context context, DbxClientV2 dbxClient, GetMagazineList.Callback callback) {
         mContext = context;
         mDbxClient = dbxClient;
         mCallback = callback;
@@ -60,11 +71,11 @@ public class GetFolderList extends AsyncTask<Object, Object, Integer> {
     @Override
     protected Integer doInBackground(Object... params) {
 
+        //String folder = "/Cover Pages/";
 
-        /*String magazinesName = magazines.getName();
-
-        if(magazinesName==null)*/
-        String magazinesName = "/Cover Pages/";
+        String magazinesName = magazines.getName();
+        //Toast.makeText(mContext, "Magazine Name " +magazinesName, Toast.LENGTH_SHORT).show();
+        magazinesName = "/"+magazinesName+"/";
 
         int count = 0;
         ListFolderResult result = null;

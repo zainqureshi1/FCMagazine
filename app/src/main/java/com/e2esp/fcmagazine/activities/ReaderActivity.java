@@ -79,6 +79,8 @@ public class ReaderActivity extends AppCompatActivity {
     //private Button uploadFileBtn;
     private int length =0 ;
     private ImageView selectedMagazine;
+    public static int magazinePagesInDropbox;
+    public static int magazinePagesInDirectory;
 
 
 
@@ -88,10 +90,57 @@ public class ReaderActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_reader);
 
+
+
         downloadMagazine = (Button) findViewById(R.id.downloadMagazine);
-        downloadMagazine.setVisibility(View.VISIBLE);
+
         //folderName = (TextView) findViewById(R.id.folderName);
 
+        config = DbxRequestConfig.newBuilder("FC Magazine").build();
+        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
+        client = new DbxClientV2(config, ACCESS_TOKEN);
+
+
+        File dir = new File(Environment.getExternalStorageDirectory(), "Dropbox/" + magazines.getName());
+        if(dir.isDirectory()){
+            magazinePagesInDirectory = countFilesInDirectory(dir);
+        /*downloadMagazine.setVisibility(View.GONE);
+        Toast.makeText(this, "Magazine Pages " +magazinePages, Toast.LENGTH_SHORT).show();
+*/
+
+            GetMagazineList magazineList = new GetMagazineList(ReaderActivity.this, client, new GetMagazineList.Callback() {
+
+                @Override
+                public void onDownloadComplete(Integer result) {
+
+                    magazinePagesInDropbox = result;
+                    //int cover = coverPagesInDropbox;
+
+                    if(magazinePagesInDirectory==magazinePagesInDropbox){
+
+                        downloadMagazine.setVisibility(View.GONE);
+                    }
+                    else {
+                        downloadMagazine.setVisibility(View.VISIBLE);
+                    }
+
+                    //DownloadCoverPages(magazinePagesInDirectory,magazinePagesInDropbox);
+                    //Toast.makeText(MainActivity.this, "Cover Pages " + coverPagesInDropbox, Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                    Toast.makeText(ReaderActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            magazineList.execute();
+
+        }else {
+            downloadMagazine.setVisibility(View.VISIBLE);
+        }
         if (magazines == null) {
             finish();
             return;
@@ -102,7 +151,6 @@ public class ReaderActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                //loadCoverPage();
                 //loadPages();
                 //loadThumbnails();
                 createOverlayAnimations();
@@ -125,9 +173,7 @@ public class ReaderActivity extends AppCompatActivity {
 
         DownloadFileTask downloadFile = new DownloadFileTask(ReaderActivity.this, client, new DownloadFileTask.Callback() {
 
-            /*File dir = new File(Environment.getExternalStorageDirectory(), magazines.getName());
-            int coverPagesInStorage = countFilesInDirectory(dir);
-            */@Override
+            @Override
             public void onDownloadComplete(File result) {
 
                /* selectedMagazine.setVisibility(View.GONE);
@@ -136,6 +182,15 @@ public class ReaderActivity extends AppCompatActivity {
                 loadMagazine(dir,coverPagesInStorage);
                */ //loadThumbnails();
 
+                downloadMagazine.setVisibility(View.GONE);
+                //loadMagazine();
+                //Log.d("Load Magazines ","Load Magazines " +magazines.getName());
+                /*File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox/Jun 2017");
+                int countFiles =  countFilesInDirectory(dropboxDir);
+                //Log.d("Files ","Files in Load Magazines " +countFiles);
+                //setupView();
+                loadMagazine(countFiles);
+                loadThumbnails();*/
                 Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
             }
 
@@ -146,8 +201,6 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
         downloadFile.execute();
-
-
 
     }
 
@@ -195,6 +248,8 @@ public class ReaderActivity extends AppCompatActivity {
         });
     }
 
+
+
     public static int countFilesInDirectory(File directory) {
         int count = 0;
         for (File file : directory.listFiles()) {
@@ -209,19 +264,22 @@ public class ReaderActivity extends AppCompatActivity {
         return count;
     }
 
-    private void loadMagazine(File dir, int coverPagesInStorage){
+    private void loadMagazine(int countFiles){
         pages.clear();
 
-        int i = 0;
-        for (File file : dir.listFiles()){
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox/Jun 2017");
+        int pageCount= countFiles;
 
-            file.getName();
+        int i = 0;
+        for (File file : dropboxDir.listFiles()){
+
+            Toast.makeText(this, "List File " +file.getName(), Toast.LENGTH_SHORT).show();
             String imagePath = String.format(file.getName(), i+1);
             pages.add(new Page(imagePath, i == selectedPage));
         }
 
-        //int pageCount=coverPagesInStorage;
-        /*for (int i = 0; i < coverPagesInStorage; i++) {
+
+       /* for (int i = 0; i < pageCount; i++) {
             String imagePath = String.format(file.getName(), i+1);
             pages.add(new Page(imagePath, i == selectedPage));
         }*/
@@ -229,9 +287,9 @@ public class ReaderActivity extends AppCompatActivity {
 
     }
 
-    /*private void loadPages() {
+   /* private void loadPages() {
         pages.clear();
-        //int pageCount = magazines.getPageCount();
+        int pageCount = magazines.getPageCount();
         for (int i = 0; i < pageCount; i++) {
             String imagePath = String.format(magazines.getFilePath(), i+1);
             pages.add(new Page(imagePath, i == selectedPage));

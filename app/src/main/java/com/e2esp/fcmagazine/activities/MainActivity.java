@@ -83,14 +83,11 @@ public class MainActivity extends AppCompatActivity {
 
                 createDirs();
                 setupView();
-
                 //loadMagazines();
-
                 createOverlayAnimations();
                 showOverlay();
 
             }
-
             @Override
             public void onDenied() {
 

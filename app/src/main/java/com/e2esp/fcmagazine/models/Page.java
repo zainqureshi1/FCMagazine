@@ -40,7 +40,7 @@ public class Page {
 
     public Bitmap getBitmap(Context context) {
         if (bitmap == null && imagePath != null) {
-            bitmap = FileLoader.loadImageFromAssets(context, imagePath);
+            bitmap = FileLoader.loadFromFile(imagePath);
         }
         return bitmap;
     }

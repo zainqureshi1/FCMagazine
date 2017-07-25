@@ -54,4 +54,15 @@ public class FileLoader {
         return null;
     }
 
+    public static Bitmap loadFromFile(String filename) {
+        try {
+            File f = new File(filename);
+            if (!f.exists()) { return null; }
+            Bitmap tmp = BitmapFactory.decodeFile(filename);
+            return tmp;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
