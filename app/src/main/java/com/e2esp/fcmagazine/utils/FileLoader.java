@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class FileLoader {
     public static Bitmap loadFromFile(String filename) {
         try {
             File f = new File(filename);
-            if (!f.exists()) { return null; }
+            //if (!f.exists()) { return null; }
             Bitmap tmp = BitmapFactory.decodeFile(filename);
             return tmp;
         } catch (Exception e) {

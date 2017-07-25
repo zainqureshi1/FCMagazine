@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 /**
  * Created by Ali on 7/21/2017.
  */
@@ -11,12 +13,7 @@ import android.os.Parcelable;
 public class Magazines  implements Parcelable {
 
     private String name;
-
-   /* public Magazines(Bitmap cover) {
-        this.cover = cover;
-    }*/
-
-    //private String filePath;
+    private Date date;
     private Bitmap cover;
     private boolean spaceFiller;
 
@@ -48,8 +45,21 @@ public class Magazines  implements Parcelable {
 
     public Magazines(String name, Bitmap myBitmapRecent) {
         this.name = name;
-
         this.cover=myBitmapRecent;
+    }
+
+    public Magazines(String name, Bitmap myBitmapRecent, Date date) {
+        this.name = name;
+        this.cover=myBitmapRecent;
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Bitmap getCover() {

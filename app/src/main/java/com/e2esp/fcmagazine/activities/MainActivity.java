@@ -4,11 +4,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,7 +21,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,16 +28,19 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.e2esp.fcmagazine.R;
-import com.e2esp.fcmagazine.adapters.MagazineRecyclerAdapter;
 import com.e2esp.fcmagazine.adapters.MagazineRecyclerAdapters;
 import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
-import com.e2esp.fcmagazine.models.Magazine;
 import com.e2esp.fcmagazine.models.Magazines;
-import com.e2esp.fcmagazine.utils.Consts;
 import com.e2esp.fcmagazine.utils.PermissionManager;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by Zain on 2/10/2017.
@@ -124,10 +127,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDownloadComplete(Integer result) {
 
                 coverPagesInDropbox = result;
-                //int cover = coverPagesInDropbox;
                 DownloadCoverPages(coverPagesInStorage,coverPagesInDropbox);
-                //Toast.makeText(MainActivity.this, "Cover Pages " + coverPagesInDropbox, Toast.LENGTH_SHORT).show();
-
                 magazineRecyclerAdapter.notifyDataSetChanged();
             }
 
@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         folderList.execute();
-        /*int length = new File("Dropbox").listFiles().length;*/
 
         File dir = new File(Environment.getExternalStorageDirectory(), "Dropbox/Cover Pages");
         coverPagesInStorage = countFilesInDirectory(dir);
@@ -180,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         int count = 0;
         for (File file : directory.listFiles()) {
             if (file.isFile()) {
-                Log.d("File: ", "Cover Page  " +file.getName());
+                //Log.d("File: ", "Cover Page  " +file.getName());
                 count++;
             }
             if (file.isDirectory()) {
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDownloadComplete(File result) {
                     Log.d("Download Complete", "onDownloadComplete: " +result);
-                    loadMagazines();
+                    loadCoverPages();
                 }
 
                 @Override
@@ -213,84 +212,59 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else{
-            loadMagazines();
+            loadCoverPages();
         }
         //magazineRecyclerAdapter.notifyDataSetChanged();
 
     }
 
-    private void loadMagazines() {
+    private void loadCoverPages() {
 
         File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
-        if (dropboxDir.isDirectory()) {
-            //dropboxDir.mkdir();
+        File magDir = new File(dropboxDir, "Cover Pages");
+        magazinesListRecent.clear();
 
-            Log.d("Directory " , "Directory Found ");
-            Toast.makeText(this, "Directory Found", Toast.LENGTH_SHORT).show();
+        for (File file:magDir.listFiles()){
 
-
-
-            String path = Environment.getExternalStorageDirectory() + "/Dropbox/Cover Pages/Jun 2017.jpg";
-
-            File imgFile = new File(path);
-
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             //get name of file(Cover Pages)
-            String magazineFilePath = imgFile.getName();
-
-            //Toast.makeText(this, "Cover Page Name " +coverPageName, Toast.LENGTH_SHORT).show();
-
+            String magazineFilePath = file.getName();
             //remove the dot jpg extension
             String magazineName = magazineFilePath.substring(0, magazineFilePath.lastIndexOf("."));
 
-            //Toast.makeText(this, "Magazine Name " +magazineName, Toast.LENGTH_LONG).show();
+            String convertToDate = magazineName;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
 
-            magazinesListLatest.clear();
-            magazinesListLatest.add(new Magazines(magazineName, myBitmap));
+            Date date = null;
+            try {
+                date = dateFormat.parse(convertToDate);
+                //Toast.makeText(this, "Covert to date" +date, Toast.LENGTH_LONG).show();
+                //return dateFormat.format(date);
+            }
+            catch(ParseException pe) {
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                //return "Date";
+            }
 
-            String pathRecent = Environment.getExternalStorageDirectory() + "/Dropbox/Cover Pages/Mar 2017.jpg";
-
-            File imgFileRecent = new File(pathRecent);
-
-            Bitmap myBitmapRecent = BitmapFactory.decodeFile(imgFileRecent.getAbsolutePath());
-            //get name of file(Cover Pages)
-            String magazineFilePathRecent = imgFileRecent.getName();
-
-            //Toast.makeText(this, "Cover Page Name " +coverPageNameRecent, Toast.LENGTH_SHORT).show();
-
-            //remove the dot jpg extension
-            String magazineNameRecent = magazineFilePathRecent.substring(0, magazineFilePathRecent.lastIndexOf("."));
-
-            //Toast.makeText(this, "Magazine Name " +magazineName, Toast.LENGTH_LONG).show();
-
-            magazinesListRecent.clear();
-            magazinesListRecent.add(new Magazines(magazineNameRecent, myBitmapRecent));
+            magazinesListRecent.add(new Magazines(magazineName, myBitmap,date));
 
 
-            String pathDownloaded = Environment.getExternalStorageDirectory() + "/Dropbox/Cover Pages/Feb 2017.jpg";
+        }//for loop end
 
-            File imgFileDownloaded = new File(pathDownloaded);
 
-            Bitmap myBitmapDownloaded = BitmapFactory.decodeFile(imgFileDownloaded.getAbsolutePath());
-            //get name of file(Cover Pages)
-            String magazineFilePathDownloaded = imgFileDownloaded.getName();
+        Collections.sort(magazinesListRecent, new Comparator<Magazines>() {
+            @Override
+            public int compare(Magazines o2, Magazines o1) {
+                if (o1.getDate() == null || o2.getDate() == null)
+                    return 0;
+                return o1.getDate().compareTo(o2.getDate());
 
-            //Toast.makeText(this, "Cover Page Name " +coverPageNameRecent, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-            //remove the dot jpg extension
-            String magazineNameDownloaded = magazineFilePathDownloaded.substring(0, magazineFilePathDownloaded.lastIndexOf("."));
-
-            //Toast.makeText(this, "Magazine Name " +magazineName, Toast.LENGTH_LONG).show();
-
-            magazinesListRecent.add(new Magazines(magazineNameDownloaded, myBitmapDownloaded));
-            magazinesListDownloaded.clear();
-            //magazinesListDownloaded.add(new Magazine("AUG 2016", "issue39/%s.jpg", R.drawable.magazine_cover_5, 54));
-            //magazinesListDownloaded.add(new Magazine("MAY 2016", "issue39/%s.jpg", R.drawable.magazine_cover_6, 54));
-
-            adjustListSize();
-
-        }
+        Magazines latestMagazine = magazinesListRecent.remove(0);
+        magazinesListLatest.clear();
+        magazinesListLatest.add(latestMagazine);
 
         magazineRecyclerAdapter.notifyDataSetChanged();
     }

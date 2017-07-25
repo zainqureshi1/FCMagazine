@@ -44,15 +44,6 @@
 
     </HorizontalScrollView>
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:id="@+id/progressBarLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/progress" />
-
     <View
         android:id="@+id/viewOverlayWaker"
         android:layout_width="match_parent"
@@ -71,14 +62,13 @@
         android:id="@+id/downloadMagazine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_toEndOf="@+id/progressBarLoading"
-        android:layout_toRightOf="@+id/progressBarLoading"
         android:visibility="gone"
         android:text="Download"
-        android:onClick="downloadClick"/>
+        android:onClick="downloadClick"
+        android:layout_above="@+id/scrollViewThumbnailsContainer"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="16dp" />
 
 
 </RelativeLayout>

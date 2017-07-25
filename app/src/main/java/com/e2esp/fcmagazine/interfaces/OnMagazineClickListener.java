@@ -1,6 +1,5 @@
 package com.e2esp.fcmagazine.interfaces;
 
-import com.e2esp.fcmagazine.models.Magazine;
 import com.e2esp.fcmagazine.models.Magazines;
 
 /**
