@@ -1,5 +1,7 @@
 package com.e2esp.fcmagazine.activities;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
@@ -31,6 +33,7 @@ import com.e2esp.fcmagazine.utils.Utility;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 
 /**
  * Created by Zain on 2/10/2017.
@@ -116,17 +119,30 @@ public class ReaderActivity extends AppCompatActivity {
                 @Override
                 public void onDownloadComplete(Integer result) {
 
-                    magazinePagesInDropbox = result;
-                    if(magazinePagesInDirectory==magazinePagesInDropbox){
-
-                        selectedMagazine.setVisibility(View.GONE);
-                        loadMagazine();
-                        loadThumbnails();
-                        downloadMagazine.setVisibility(View.GONE);
-
+                    if(result == 0){
+                        Log.d("Magazine List","Magazine List");
+                        if(magazinePagesInDirectory>0){
+                            selectedMagazine.setVisibility(View.GONE);
+                            loadMagazine();
+                            loadThumbnails();
+                            downloadMagazine.setVisibility(View.GONE);
+                        }else{
+                            downloadMagazine.setVisibility(View.VISIBLE);
+                        }
                     }
                     else {
-                        downloadMagazine.setVisibility(View.VISIBLE);
+
+                        magazinePagesInDropbox = result;
+                        if (magazinePagesInDirectory == magazinePagesInDropbox) {
+
+                            selectedMagazine.setVisibility(View.GONE);
+                            loadMagazine();
+                            loadThumbnails();
+                            downloadMagazine.setVisibility(View.GONE);
+
+                        } else {
+                            downloadMagazine.setVisibility(View.VISIBLE);
+                        }
                     }
 
                 }
@@ -152,16 +168,29 @@ public class ReaderActivity extends AppCompatActivity {
         //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
 
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connManager .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        if (!wifi.isConnected() && !mobile.isConnected()){
+
+            Toast.makeText(getApplicationContext(), " Please make sure, your network connection is ON", Toast.LENGTH_LONG).show();
+        }
+
         DownloadFileTask downloadFile = new DownloadFileTask(ReaderActivity.this, client, new DownloadFileTask.Callback() {
 
             @Override
             public void onDownloadComplete(File result) {
 
-                downloadMagazine.setVisibility(View.GONE);
-                selectedMagazine.setVisibility(View.GONE);
-                loadMagazine();
-                loadThumbnails();
-                //Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
+                if(result==null){
+
+                }else {
+                    downloadMagazine.setVisibility(View.GONE);
+                    selectedMagazine.setVisibility(View.GONE);
+                    loadMagazine();
+                    loadThumbnails();
+                    //Toast.makeText(ReaderActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -236,6 +265,7 @@ public class ReaderActivity extends AppCompatActivity {
         //Toast.makeText(this, "Show Magazine", Toast.LENGTH_SHORT).show();
         File[] files = magDir.listFiles();
         Arrays.sort(files);
+        /*Arrays.sort(files);*/
         int i = 0;
         for (File file : files){
 

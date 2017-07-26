@@ -73,26 +73,30 @@ public class GetFolderList extends AsyncTask<Object, Object, Integer> {
         } catch (DbxException e) {
             e.printStackTrace();
         }
-        while (true) {
-            for (Metadata metadata : result.getEntries()) {
 
-                count++;
-                Log.d("Path ","File Name " +metadata);
-                //System.out.println(metadata.getPathLower());
-            }
+        if (result != null){
+            while (true) {
+                for (Metadata metadata : result.getEntries()) {
 
-            if (!result.getHasMore()) {
-                break;
-            }
+                    count++;
+                    Log.d("Path ", "File Name " + metadata);
+                    //System.out.println(metadata.getPathLower());
+                }
 
-            try {
-                result = mDbxClient.files().listFolderContinue(result.getCursor());
-            } catch (DbxException e) {
-                e.printStackTrace();
-            }
-        }//while loop end
+                if (!result.getHasMore()) {
+                    break;
+                }
 
-        return count;
+                try {
+                    result = mDbxClient.files().listFolderContinue(result.getCursor());
+                } catch (DbxException e) {
+                    e.printStackTrace();
+                }
+            }//while loop end
+            return count;
+    }
+
+        return 0;
 
     }//function do in background end
 

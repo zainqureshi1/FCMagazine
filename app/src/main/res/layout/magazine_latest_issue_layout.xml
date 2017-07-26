@@ -22,7 +22,7 @@
         android:gravity="center"
         android:textSize="@dimen/text_size_large"
         android:rotation="345"
-        android:textColor="@color/red"
+        android:textColor="@color/blue"
         android:textStyle="bold" />
 
 </RelativeLayout>

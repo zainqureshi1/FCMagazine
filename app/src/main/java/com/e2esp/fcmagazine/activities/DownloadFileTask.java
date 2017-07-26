@@ -111,54 +111,58 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
         } catch (DbxException e) {
             e.printStackTrace();
         }
-        while (true) {
-            for (Metadata metadata : result.getEntries()) {
 
-                File path = new File(magazinesDir,metadata.getName());
-                i++;
+        if(result != null) {
+            while (true) {
+                for (Metadata metadata : result.getEntries()) {
 
-                OutputStream downloadFile = null;
+                    File path = new File(magazinesDir, metadata.getName());
+                    i++;
 
-                try {
-                    downloadFile = new FileOutputStream(path);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                    OutputStream downloadFile = null;
 
-                try {
-                    //DbxClientV2 client = null;
-                    FileMetadata filemetadata = mDbxClient.files().downloadBuilder(metadata.getPathLower())
-                            .download(downloadFile);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (DbxException e1) {
-                    e1.printStackTrace();
-                } finally {
                     try {
-                        downloadFile.close();
-                        publishProgress(i, total);
-                        downloadProgress.setProgress(i);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                        downloadFile = new FileOutputStream(path);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
                     }
 
+                    try {
+                        //DbxClientV2 client = null;
+                        FileMetadata filemetadata = mDbxClient.files().downloadBuilder(metadata.getPathLower())
+                                .download(downloadFile);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (DbxException e1) {
+                        e1.printStackTrace();
+                    } finally {
+                        try {
+                            downloadFile.close();
+                            publishProgress(i, total);
+                            downloadProgress.setProgress(i);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+
+                    Log.d("Path ", "File Name " + metadata.getPathLower());
+                    //System.out.println(metadata.getPathLower());
                 }
 
-                Log.d("Path ","File Name " +metadata.getPathLower());
-                //System.out.println(metadata.getPathLower());
-            }
+                if (!result.getHasMore()) {
+                    break;
+                }
 
-            if (!result.getHasMore()) {
-                break;
-            }
+                try {
+                    result = mDbxClient.files().listFolderContinue(result.getCursor());
+                } catch (DbxException e) {
+                    e.printStackTrace();
+                }
+            }//while loop end
 
-            try {
-                result = mDbxClient.files().listFolderContinue(result.getCursor());
-            } catch (DbxException e) {
-                e.printStackTrace();
-            }
-        }//while loop end
-
+            return null;
+        }
         return null;
 
     }//function do in background end

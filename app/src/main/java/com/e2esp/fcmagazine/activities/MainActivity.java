@@ -129,14 +129,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDownloadComplete(Integer result) {
 
-                coverPagesInDropbox = result;
-                DownloadCoverPages(coverPagesInStorage,coverPagesInDropbox);
-                magazineRecyclerAdapter.notifyDataSetChanged();
+                if (result == 0) {
+                    Log.d("Error finding list ", "Error finding list");
+                    if(coverPagesInStorage > 0){
+                        loadCoverPages();
+                    }//inner if condition
+                    else{
+                        Toast.makeText(MainActivity.this, "Internet Connection required", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    coverPagesInDropbox = result;
+                    DownloadCoverPages(coverPagesInStorage, coverPagesInDropbox);
+                    magazineRecyclerAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onError(Exception e) {
 
+                Log.d("Error finding list ", "Error finding list");
                 Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -225,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
         File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
         File magDir = new File(dropboxDir, "Cover Pages");
-        magazinesListRecent.clear();
+        magazinesListLatest.clear();
 
         for (File file:magDir.listFiles()){
 
@@ -249,13 +260,13 @@ public class MainActivity extends AppCompatActivity {
                 //return "Date";
             }
 
-            magazinesListRecent.add(new Magazines(magazineName, myBitmap,date));
+            magazinesListLatest.add(new Magazines(magazineName, myBitmap,date));
 
 
         }//for loop end
 
 
-        Collections.sort(magazinesListRecent, new Comparator<Magazines>() {
+        Collections.sort(magazinesListLatest, new Comparator<Magazines>() {
             @Override
             public int compare(Magazines o2, Magazines o1) {
                 if (o1.getDate() == null || o2.getDate() == null)
@@ -265,9 +276,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Magazines latestMagazine = magazinesListRecent.remove(0);
-        magazinesListLatest.clear();
-        magazinesListLatest.add(latestMagazine);
+        /*Magazines latestMagazine = magazinesListLatest.remove(0);
+        //magazinesListLatest.clear();
+        magazinesListLatest.add(latestMagazine);*/
 
         magazineRecyclerAdapter.notifyDataSetChanged();
     }
