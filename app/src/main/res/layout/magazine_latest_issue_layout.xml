@@ -4,7 +4,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:paddingLeft="@dimen/margin_medium" android:paddingRight="@dimen/margin_medium"
     android:paddingTop="@dimen/margin_small" android:paddingBottom="@dimen/margin_small"
-    android:background="@drawable/background_tile" >
+     >
 
     <ImageView
         android:id="@+id/imageViewCover"
@@ -12,17 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:scaleType="fitCenter"
+        android:layout_margin="10dp"
         android:adjustViewBounds="true" />
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center"
-        android:textSize="@dimen/text_size_large"
-        android:rotation="345"
-        android:textColor="@color/blue"
-        android:textStyle="bold" />
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/black"
+        android:scaleType="fitCenter"
+        android:textStyle="bold"
+        android:layout_below="@+id/imageViewCover"/>
+
 
 </RelativeLayout>

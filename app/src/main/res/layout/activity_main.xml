@@ -7,40 +7,16 @@
     android:background="@color/white"
     tools:context="com.e2esp.fcmagazine.activities.MainActivity" >
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/magazine_header_layout"
+        android:id="@+id/include" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewMagazines"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
-
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:padding="@dimen/margin_small"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/white"
-        android:orientation="horizontal"
-        android:background="@color/slight_transparent" />
-
-    <View
-        android:id="@+id/viewOverlayWaker"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!--<Button
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="83dp"
-        android:layout_marginRight="83dp"
-        android:text="Show Image"
-        android:onClick="clickImageView"/>-->
-
+        android:layout_below="@+id/include" />
 
 </RelativeLayout>

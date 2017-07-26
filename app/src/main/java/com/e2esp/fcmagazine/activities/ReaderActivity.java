@@ -265,7 +265,6 @@ public class ReaderActivity extends AppCompatActivity {
         //Toast.makeText(this, "Show Magazine", Toast.LENGTH_SHORT).show();
         File[] files = magDir.listFiles();
         Arrays.sort(files);
-        /*Arrays.sort(files);*/
         int i = 0;
         for (File file : files){
 
@@ -320,7 +319,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     private void hideOverlay() {
         if (overlayVisible) {
-            textViewTitle.startAnimation(animationTitleOut);
+            //textViewTitle.startAnimation(animationTitleOut);
             linearLayoutThumbnailsContainer.startAnimation(animationThumbnailsOut);
             overlayVisible = false;
         }
@@ -328,7 +327,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     private void showOverlay() {
         if (!overlayVisible) {
-            textViewTitle.startAnimation(animationTitleIn);
+            //textViewTitle.startAnimation(animationTitleIn);
             linearLayoutThumbnailsContainer.startAnimation(animationThumbnailsIn);
             overlayVisible = true;
         }

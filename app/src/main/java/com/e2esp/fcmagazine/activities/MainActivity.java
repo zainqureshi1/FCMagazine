@@ -56,11 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Magazines> magazinesListDownloaded;
     private MagazineRecyclerAdapters magazineRecyclerAdapter;
 
-    private TextView textViewTitle;
-    private View viewOverlayWaker;
-
     private final static String DROPBOX_FILE_DIR = "/FC Magazine/";
-
     private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
     private FileMetadata mSelectedFile;
 
@@ -72,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     public static int coverPagesInDropbox;
     public static int coverPagesInStorage;
 
-    private boolean overlayVisible = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //startActivity(new Intent(this, SplashActivity.class));
-
         setContentView(R.layout.activity_main);
 
         PermissionManager.getInstance().checkPermissionRequest(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 9, "Store Magazine Cover Pages", new PermissionManager.Callback() {
@@ -90,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 createDirs();
                 setupView();
                 //loadMagazines();
-                createOverlayAnimations();
-                showOverlay();
-
+                //createOverlayAnimations();
             }
             @Override
             public void onDenied() {
@@ -175,17 +167,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewMagazines.setItemAnimator(new DefaultItemAnimator());
         recyclerViewMagazines.setAdapter(magazineRecyclerAdapter);
 
-        textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        textViewTitle.setText(R.string.app_name);
-
-        viewOverlayWaker = findViewById(R.id.viewOverlayWaker);
-        viewOverlayWaker.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                showOverlay();
-                return false;
-            }
-        });
     }
 
     //count number of cover pages
@@ -276,10 +257,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*Magazines latestMagazine = magazinesListLatest.remove(0);
-        //magazinesListLatest.clear();
-        magazinesListLatest.add(latestMagazine);*/
-
         magazineRecyclerAdapter.notifyDataSetChanged();
     }
 
@@ -301,21 +278,6 @@ public class MainActivity extends AppCompatActivity {
     private void createOverlayAnimations() {
         animationTitleIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_downwards);
         animationTitleOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_upwards);
-    }
-
-    private void hideOverlay() {
-        if (overlayVisible) {
-            textViewTitle.startAnimation(animationTitleOut);
-            overlayVisible = false;
-        }
-    }
-
-    private void showOverlay() {
-        if (!overlayVisible) {
-            textViewTitle.startAnimation(animationTitleIn);
-            overlayVisible = true;
-        }
-        overlaySleepTimer.start();
     }
 
     @Override
@@ -342,15 +304,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
-    private CountDownTimer overlaySleepTimer = new CountDownTimer(5000, 5000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-        }
-        @Override
-        public void onFinish() {
-            hideOverlay();
-        }
-    };
 
 }

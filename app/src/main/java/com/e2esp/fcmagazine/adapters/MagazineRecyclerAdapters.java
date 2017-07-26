@@ -50,12 +50,12 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
         if (magazinesListLatest.size() > 0) {
             itemCount += magazinesListLatest.size() + 1;
         }
-        if (magazinesListRecent.size() > 0) {
+        /*if (magazinesListRecent.size() > 0) {
             itemCount += magazinesListRecent.size() + 1;
         }
         if (magazinesListDownloaded.size() > 0) {
             itemCount += magazinesListDownloaded.size() + 1;
-        }
+        }*/
         return itemCount;
     }
 
@@ -119,7 +119,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
             View view = layoutInflater.inflate(R.layout.magazine_latest_issue_layout, parent, false);
             return new VHItem(view);
         }
-        View view = layoutInflater.inflate(R.layout.magazine_header_layout, parent, false);
+        View view = layoutInflater.inflate(R.layout.header_layout, parent, false);
         if (viewType == VIEW_TYPE_HEADER_LATEST) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
@@ -144,7 +144,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
             }
             items += magazinesListLatest.size();
         }
-        if (magazinesListRecent.size() > 0) {
+       /* if (magazinesListRecent.size() > 0) {
             if (position == items + headers) {
                 ((VHHeader) holder).bindView(context.getString(R.string.recent_issues));
                 return;
@@ -167,7 +167,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 return;
             }
             items += magazinesListDownloaded.size();
-        }
+        }*/
     }
 
     public class VHItem extends RecyclerView.ViewHolder {
@@ -207,10 +207,10 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
         private TextView textViewHeader;
         public VHHeader(View headerView) {
             super(headerView);
-            textViewHeader = (TextView) headerView.findViewById(R.id.textViewHeader);
+            //textViewHeader = (TextView) headerView.findViewById(R.id.textViewHeader);
         }
         public void bindView(String heading) {
-            textViewHeader.setText(heading);
+            //textViewHeader.setText(heading);
         }
     }
 

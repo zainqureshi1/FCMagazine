@@ -2,16 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/magazineHeaderLayout" android:orientation="vertical"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small" android:background="@drawable/background_tile" >
+    android:layout_marginTop="@dimen/margin_small" android:background="@color/white" >
 
     <TextView
         android:id="@+id/textViewHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
+        android:layout_height="52dp"
+        android:gravity="left|center"
+        android:background="#dcdcdc"
         android:paddingTop="@dimen/margin_small"
         android:paddingLeft="@dimen/margin_medium"
         android:textSize="@dimen/text_size_medium"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:paddingBottom="10dp"
         android:textColor="@color/black" />
 
 </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_tile"
+    android:background="@color/white"
     tools:context="com.e2esp.fcmagazine.activities.ReaderActivity" >
 
     <com.e2esp.fcmagazine.views.foldable.FoldableListLayout
@@ -22,9 +22,9 @@
         android:padding="@dimen/margin_small"
         android:gravity="center"
         android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:orientation="horizontal"
-        android:background="@color/slight_transparent" />
+        android:background="#dcdcdc" />
 
     <HorizontalScrollView
         android:id="@+id/scrollViewThumbnailsContainer"
@@ -43,7 +43,6 @@
             android:orientation="horizontal" />
 
     </HorizontalScrollView>
-
     <View
         android:id="@+id/viewOverlayWaker"
         android:layout_width="match_parent"
@@ -55,6 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/tile"
+        android:layout_margin="40dp"
+        android:paddingTop="10dp"
         android:layout_below="@+id/textViewTitle"
         />
 
