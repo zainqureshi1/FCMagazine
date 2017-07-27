@@ -35,14 +35,12 @@ import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
 
 public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
 
-    private static final String TAG = "DownLoadFile";
     private static ProgressDialog downloadProgress = null;
     private final Context mContext;
     private final DbxClientV2 mDbxClient;
     private final Callback mCallback;
-    //private Magazines magazines;
     private Exception mException;
-    //private String magazineName;
+    private final String magazineName;
 
     public interface Callback {
         void onDownloadComplete(File result);
@@ -50,9 +48,9 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
         void onError(Exception e);
     }
 
-    DownloadFileTask(Context context, DbxClientV2 dbxClient, Callback callback) {
+    DownloadFileTask(Context context, DbxClientV2 dbxClient,String magazineName, Callback callback) {
         mContext = context;
-        //this.magazineName = magazineName;
+        this.magazineName = magazineName;
         mDbxClient = dbxClient;
         mCallback = callback;
     }
@@ -84,22 +82,21 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
     @Override
     protected File doInBackground(FileMetadata... params) {
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
         if (!dropboxDir.isDirectory()) {
             dropboxDir.mkdir();
         }
 
-        String magazinesName = magazines.getName();
 
-        File magazinesDir = new File(dropboxDir, magazinesName);
+        File magazinesDir = new File(dropboxDir, magazineName);
         if (!magazinesDir.isDirectory()) {
             magazinesDir.mkdir();
         }
 
         int i=0;
-        Log.d("Magazines Name"," Magazines Name " + magazinesName);
+        Log.d("Magazines Name"," Magazines Name " + magazineName);
 
-        String folder = "/" +magazinesName+ "/";
+        String folder = "/" +magazineName+ "/";
 
         ListFolderResult result = null;
         int total = 0;
@@ -163,7 +160,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
 
             return null;
         }
-        return null;
+        return magazinesDir;
 
     }//function do in background end
 

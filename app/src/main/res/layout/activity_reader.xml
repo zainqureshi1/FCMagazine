@@ -56,20 +56,10 @@
         app:srcCompat="@drawable/tile"
         android:layout_margin="40dp"
         android:paddingTop="10dp"
+        android:visibility="gone"
         android:layout_below="@+id/textViewTitle"
         />
 
-    <Button
-        android:id="@+id/downloadMagazine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Download"
-        android:onClick="downloadClick"
-        android:layout_above="@+id/scrollViewThumbnailsContainer"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="16dp" />
 
 
 </RelativeLayout>

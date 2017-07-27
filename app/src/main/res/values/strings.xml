@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FC Magazine</string>
+    <string name="app_name">Fashion &amp; LifeStyle Monthly Magazine</string>
 
     <string name="motto">Where fashion comes first!</string>
 
@@ -19,4 +19,5 @@
     <string name="downloaded">DOWNLOADED</string>
 
     <string name="press_back_again_to_exit">Press BACK again to exit</string>
+    <string name="download">Download</string>
 </resources>

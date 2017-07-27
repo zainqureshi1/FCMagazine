@@ -23,31 +23,29 @@ import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 */
 
-import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
-
 /**
  * Created by Ali on 7/25/2017.
  */
 
 public class GetMagazineList extends AsyncTask<Object, Object, Integer> {
 
-private static final String TAG = "DownLoadFile";
-private static ProgressDialog downloadProgress = null;
-private final Context mContext;
-private final DbxClientV2 mDbxClient;
-private final Callback mCallback;
-private Exception mException;
+    private final Context mContext;
+    private final DbxClientV2 mDbxClient;
+    private final Callback mCallback;
+    private final String magazineName;
+    private Exception mException;
 
-public interface Callback {
-    void onDownloadComplete(Integer result);
+    public interface Callback {
+        void onDownloadComplete(Integer result);
 
-    void onError(Exception e);
-}
+        void onError(Exception e);
+    }
 
-    GetMagazineList(Context context, DbxClientV2 dbxClient, GetMagazineList.Callback callback) {
+    GetMagazineList(Context context, DbxClientV2 dbxClient, String magazineName, GetMagazineList.Callback callback) {
         mContext = context;
         mDbxClient = dbxClient;
         mCallback = callback;
+        this.magazineName = magazineName;
     }
 
     @Override
@@ -56,6 +54,7 @@ public interface Callback {
         //downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Image",true);
 
     }
+
     @Override
     protected void onPostExecute(Integer result) {
         super.onPostExecute(result);
@@ -73,18 +72,15 @@ public interface Callback {
 
         //String folder = "/Cover Pages/";
 
-        String magazinesName = magazines.getName();
         //Toast.makeText(mContext, "Magazine Name " +magazinesName, Toast.LENGTH_SHORT).show();
-        magazinesName = "/"+magazinesName+"/";
-
         int count = 0;
         ListFolderResult result = null;
         try {
-            result = mDbxClient.files().listFolder(magazinesName);
+            result = mDbxClient.files().listFolder("/" + magazineName + "/");
         } catch (DbxException e) {
             e.printStackTrace();
         }
-        if(result != null) {
+        if (result != null) {
             while (true) {
                 for (Metadata metadata : result.getEntries()) {
 

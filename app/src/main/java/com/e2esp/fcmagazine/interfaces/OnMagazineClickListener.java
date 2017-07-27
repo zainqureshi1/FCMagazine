@@ -7,6 +7,6 @@ import com.e2esp.fcmagazine.models.Magazines;
  */
 
 public interface OnMagazineClickListener {
-    void onMagazineClicked(Magazines magazine);
-   /* void onMagazinesClick(Magazines magazines);*/
+    void onDownloadClicked(Magazines magazine);
+    void onCoverPageClicked(Magazines magazines);
 }

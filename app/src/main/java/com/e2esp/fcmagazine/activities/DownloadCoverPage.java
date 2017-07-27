@@ -79,7 +79,7 @@ public class DownloadCoverPage extends AsyncTask<FileMetadata, Void, File> {
     protected File doInBackground(FileMetadata... params) {
 
 
-        String folder_main = "Dropbox/Cover Pages";
+        String folder_main = "FC Magazine/Cover Pages";
         File dir = new File(Environment.getExternalStorageDirectory(), folder_main);
         dir.mkdir();
         int i=1;

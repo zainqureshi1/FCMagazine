@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -21,6 +23,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
     public static int coverPagesInDropbox;
     public static int coverPagesInStorage;
 
+    public static int magazinePagesInDropbox;
+    public static int magazinePagesInDirectory;
+    public static Boolean magazineDownloaded = false;;
+
+    private TextView downloadMagazine;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         //startActivity(new Intent(this, SplashActivity.class));
         setContentView(R.layout.activity_main);
+        downloadMagazine = (TextView) findViewById(R.id.textViewDownload);
 
         PermissionManager.getInstance().checkPermissionRequest(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 9, "Store Magazine Cover Pages", new PermissionManager.Callback() {
             @Override
@@ -96,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createDirs() {
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
         if (!dropboxDir.isDirectory()) {
             dropboxDir.mkdir();
         }
@@ -105,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
             coverPagesDir.mkdir();
         }
     }
-
-
-
     private void setupView() {
 
 
@@ -146,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         folderList.execute();
 
-        File dir = new File(Environment.getExternalStorageDirectory(), "Dropbox/Cover Pages");
+        File dir = new File(Environment.getExternalStorageDirectory(), "FC Magazine/Cover Pages");
         coverPagesInStorage = countFilesInDirectory(dir);
         //Toast.makeText(this, "Number of Cover Pages " +coverPagesInStorage, Toast.LENGTH_LONG).show();
 
@@ -156,8 +164,15 @@ public class MainActivity extends AppCompatActivity {
         magazinesListDownloaded = new ArrayList<>();
         magazineRecyclerAdapter = new MagazineRecyclerAdapters(this, magazinesListLatest, magazinesListRecent, magazinesListDownloaded, new OnMagazineClickListener() {
             @Override
-            public void onMagazineClicked(Magazines magazine) {
-                magazineClicked(magazine);
+            public void onDownloadClicked(Magazines magazine) {
+                onDownloadClick(magazine);
+            }
+
+            @Override
+            public void onCoverPageClicked(Magazines magazines) {
+
+                onCoverPageClick(magazines);
+
             }
         });
 
@@ -215,7 +230,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadCoverPages() {
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "Dropbox");
+
+
+        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
         File magDir = new File(dropboxDir, "Cover Pages");
         magazinesListLatest.clear();
 
@@ -241,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 //return "Date";
             }
 
-            magazinesListLatest.add(new Magazines(magazineName, myBitmap,date));
+            magazinesListLatest.add(new Magazines(magazineName, myBitmap,date,false));
 
 
         }//for loop end
@@ -257,7 +274,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        for(File magazineFiles:dropboxDir.listFiles()){
+
+            String magazinesName = magazineFiles.getName();
+            if(magazinesName.equals("Cover Pages")){
+                Log.d("Do nothing","Do Nothing");
+            }else {
+                if (magazineFiles.isDirectory()) {
+                    magazinePagesInDirectory = countFilesInDirectory(magazineFiles);
+                    if (magazinePagesInDirectory > 0) {
+                        for (final Magazines magazine:magazinesListLatest) {
+                            if(magazinesName.equals(magazine.getName())){
+                                magazine.setDownloaded(true);
+
+                                    //get list of selected magazine from dropbox
+                                    GetMagazineList magazineList = new GetMagazineList(MainActivity.this, client,magazinesName, new GetMagazineList.Callback() {
+
+                                        @Override
+                                        public void onDownloadComplete(Integer result) {
+
+                                            if(result == 0){
+                                                Log.d("Magazine List","Magazine List");
+                                               /* if(magazinePagesInDirectory>0){
+
+                                                    downloadMagazine.setVisibility(View.GONE);
+                                                }else{
+                                                    //selectedMagazine.setVisibility(View.VISIBLE);
+                                                    downloadMagazine.setVisibility(View.VISIBLE);
+                                                }*/
+                                            }
+                                            else {
+
+                                                magazinePagesInDropbox = result;
+                                                if (magazinePagesInDirectory == magazinePagesInDropbox) {
+
+                                                    magazine.setDownloaded(false);
+
+                                                }else{
+                                                    //downloadMagazine.setText("Available");
+                                                }
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+
+                                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                    magazineList.execute();
+                                break;
+                            }
+
+                        }
+                    }//inner if condition
+                }//outer if condition
+
+            }//else condition
+
+
+
+        }
         magazineRecyclerAdapter.notifyDataSetChanged();
+
+
     }
 
     private void adjustListSize() {
@@ -269,10 +351,58 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void magazineClicked(Magazines magazine) {
+
+    public void onCoverPageClick(Magazines magazine){
+
         ReaderActivity.magazines = magazine;
-        Intent intent = new Intent(this, ReaderActivity.class);
-        startActivity(intent);
+
+        if(magazine.isDownloaded()==true) {
+
+            Intent intent = new Intent(this, ReaderActivity.class);
+            startActivity(intent);
+
+        }
+
+
+    }
+
+    private void onDownloadClick(Magazines magazine) {
+
+        config = DbxRequestConfig.newBuilder("FC Magazine").build();
+        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
+        client = new DbxClientV2(config, ACCESS_TOKEN);
+
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connManager .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        if (!wifi.isConnected() && !mobile.isConnected()){
+
+            Toast.makeText(getApplicationContext(), " Please make sure, your network connection is ON", Toast.LENGTH_LONG).show();
+        }
+
+        DownloadFileTask downloadFile = new DownloadFileTask(MainActivity.this, client,magazine.getName(), new DownloadFileTask.Callback() {
+
+            @Override
+            public void onDownloadComplete(File result) {
+
+                if(result!=null){
+
+                }
+                else {
+                    loadCoverPages();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        downloadFile.execute();
+
+
     }
 
     private void createOverlayAnimations() {

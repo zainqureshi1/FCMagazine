@@ -175,12 +175,14 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
         private View topView;
         private ImageView imageViewCover;
         private TextView textViewName;
+        private TextView textViewDownload;
 
         public VHItem(View itemView) {
             super(itemView);
-            topView = itemView;
+            topView = (TextView) itemView.findViewById(R.id.textViewDownload);
             imageViewCover = (ImageView) itemView.findViewById(R.id.imageViewCover);
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
+            textViewDownload = (TextView) itemView.findViewById(R.id.textViewDownload);
         }
 
         public void bindView(final Magazines magazine) {
@@ -192,10 +194,16 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 imageViewCover.setImageBitmap(magazine.getCover());
                 String magazineName = magazine.getName();
                 textViewName.setText(magazineName);
-                topView.setOnClickListener(new View.OnClickListener() {
+                textViewDownload.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onMagazineClickListeners.onMagazineClicked(magazine);
+                        onMagazineClickListeners.onDownloadClicked(magazine);
+                    }
+                });
+                imageViewCover.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onMagazineClickListeners.onCoverPageClicked(magazine);
                     }
                 });
             }

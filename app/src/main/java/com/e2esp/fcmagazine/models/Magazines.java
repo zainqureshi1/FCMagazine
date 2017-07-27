@@ -16,6 +16,16 @@ public class Magazines  implements Parcelable {
     private Date date;
     private Bitmap cover;
     private boolean spaceFiller;
+    private boolean isDownloaded;
+
+    public Magazines(String name, Bitmap cover, Date date, boolean isDownloaded) {
+        this.name = name;
+        this.date = date;
+        this.cover = cover;
+        this.isDownloaded = isDownloaded;
+    }
+
+
 
     public Magazines(boolean spaceFiller) {
         this.name = "";
@@ -94,4 +104,11 @@ public class Magazines  implements Parcelable {
         this.cover = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
+    public boolean isDownloaded() {
+        return isDownloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        isDownloaded = downloaded;
+    }
 }

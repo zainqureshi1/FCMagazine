@@ -6,6 +6,7 @@
     android:paddingTop="@dimen/margin_small" android:paddingBottom="@dimen/margin_small"
      >
 
+
     <ImageView
         android:id="@+id/imageViewCover"
         android:layout_width="wrap_content"
@@ -13,18 +14,34 @@
         android:layout_centerInParent="true"
         android:scaleType="fitCenter"
         android:layout_margin="10dp"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:textSize="@dimen/text_size_medium"
         android:textColor="@color/black"
         android:scaleType="fitCenter"
+        android:paddingLeft="50dp"
         android:textStyle="bold"
         android:layout_below="@+id/imageViewCover"/>
+    <TextView
+        android:id="@+id/textViewDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textViewName"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="49dp"
+        android:layout_marginRight="49dp"
+        android:textColor="@color/black"
+        android:text="Download"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/imageViewCover"
+        android:drawableRight="@drawable/icon_download"
+
+         />
 
 
 </RelativeLayout>
