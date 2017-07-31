@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.subscribe_action_bar, menu);
+        //inflater.inflate(R.menu.subscribe_action_bar, menu);
 
         setActionBar();
         return super.onCreateOptionsMenu(menu);
@@ -173,11 +173,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDownloadComplete(Integer result) {
 
+                loadFromStorage();
+                loadCoverPages();
                 if (result == 0) {
                     Log.d("Error finding list ", "Error finding list");
                     if(coverPagesInStorage > 0){
-                        loadFromStorage();
-                        loadCoverPages();
+                        /*loadFromStorage();
+                        * loadCoverPages();*/
+
                     }//inner if condition
                     else{
                         Toast.makeText(MainActivity.this, "Internet Connection required", Toast.LENGTH_SHORT).show();
@@ -322,50 +325,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadCoverPages() {
 
-
-
-        /*File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
-        File magDir = new File(dropboxDir, "Cover Pages");
-        magazinesListLatest.clear();
-
-        for (File file:magDir.listFiles()){
-
-            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            //get name of file(Cover Pages)
-            String magazineFilePath = file.getName();
-            //remove the dot jpg extension
-            String magazineName = magazineFilePath.substring(0, magazineFilePath.lastIndexOf("."));
-
-            String convertToDate = magazineName;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
-
-            Date date = null;
-            try {
-                date = dateFormat.parse(convertToDate);
-                //Toast.makeText(this, "Covert to date" +date, Toast.LENGTH_LONG).show();
-                //return dateFormat.format(date);
-            }
-            catch(ParseException pe) {
-                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                //return "Date";
-            }
-
-            magazinesListLatest.add(new Magazines(magazineName, myBitmap,date,false,0,0));
-
-
-        }//for loop end
-
-
-        Collections.sort(magazinesListLatest, new Comparator<Magazines>() {
-            @Override
-            public int compare(Magazines o2, Magazines o1) {
-                if (o1.getDate() == null || o2.getDate() == null)
-                    return 0;
-                return o1.getDate().compareTo(o2.getDate());
-
-            }
-        });*/
-
         for(File magazineFiles:dropboxDir.listFiles()){
 
             String magazinesName = magazineFiles.getName();
@@ -476,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onDownloadClick(Magazines magazine) {
+    private void onDownloadClick(final Magazines magazine) {
 
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
         //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
@@ -491,10 +450,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        magazine.setDownloading(true);
+        magazineRecyclerAdapter.notifyDataSetChanged();
+
         DownloadFileTask downloadFile = new DownloadFileTask(MainActivity.this, client,magazine, new DownloadFileTask.Callback() {
 
             @Override
             public void onDownloadComplete() {
+                magazine.setDownloading(false);
                 magazineRecyclerAdapter.notifyDataSetChanged();
                    //loadCoverPages();
             }

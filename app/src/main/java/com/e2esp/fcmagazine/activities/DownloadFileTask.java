@@ -99,7 +99,6 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
         String magazineName= magazines.getName();
 
         int i=0;
-        Log.d("Magazines Name"," Magazines Name " + magazineName);
 
         String folder = "/" +magazineName+ "/";
 
@@ -108,9 +107,12 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
         //int total = result.getEntries().size();
         try {
             result = mDbxClient.files().listFolder(folder);
-             total = result.getEntries().size();
+             total = result.getEntries().size();/*
             magazines.setCurrentMagazinePages(i);
-            magazines.setCurrentMagazinePages(total);
+            magazines.setCurrentMagazinePages(total);*/
+             magazines.setCurrentMagazinePages(i);
+             magazines.setTotalMagazinePages(total);
+            //publishProgress(i,total);
 
         } catch (DbxException e) {
             e.printStackTrace();

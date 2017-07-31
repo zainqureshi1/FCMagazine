@@ -20,6 +20,16 @@ public class Magazines  implements Parcelable {
     private int currentMagazinePages;
     private int totalMagazinePages;
 
+    public boolean isDownloading() {
+        return isDownloading;
+    }
+
+    public void setDownloading(boolean downloading) {
+        isDownloading = downloading;
+    }
+
+    private boolean isDownloading = false;
+
     public Magazines(String name, Date date, Bitmap cover, boolean isDownloaded, int currentMagazinePages, int totalMagazinePages) {
         this.name = name;
         this.date = date;

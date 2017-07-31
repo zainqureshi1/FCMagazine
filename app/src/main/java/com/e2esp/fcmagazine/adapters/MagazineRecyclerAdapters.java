@@ -199,37 +199,33 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 textViewName.setText(magazineName);
                 progressBarDownload.setVisibility(View.GONE);
 
+                if(magazine.isDownloading()) {
+                textViewDownload.setVisibility(View.GONE);
+                    progressBarDownload.setVisibility(View.VISIBLE);
+                    progressBarDownload.setProgress(magazine.getCurrentMagazinePages());
+                    progressBarDownload.setMax(magazine.getTotalMagazinePages());
 
-
-                if(magazine.isDownloaded()==true){
+                }else if(magazine.isDownloaded()==true){
                     textViewDownload.setVisibility(View.VISIBLE);
                     textViewDownload.setCompoundDrawables(null,null,null,null);
                     textViewDownload.setText("Available");
                     progressBarDownload.setVisibility(View.GONE);
 
-                    /*imageViewCover.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onMagazineClickListeners.onCoverPageClicked(magazine);
-                        }
-                    });*/
-                }else if(magazine.getCurrentMagazinePages()>0){
-                    int magazineProgress = magazine.getCurrentMagazinePages();
-                    textViewDownload.setVisibility(View.GONE);
-                    progressBarDownload.setVisibility(View.VISIBLE);
-                    progressBarDownload.setProgress(magazineProgress);
+
                 }else {
                     int downloadDrawable = R.drawable.icon_download;
 
-                    textViewDownload.setCompoundDrawablesWithIntrinsicBounds(0,0,downloadDrawable,0);
-                    textViewDownload.setText("Download");
+                        textViewDownload.setCompoundDrawablesWithIntrinsicBounds(0, 0, downloadDrawable, 0);
+                        textViewDownload.setText("Download");
 
-                    textViewDownload.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onMagazineClickListeners.onDownloadClicked(magazine);
-                        }
-                    });
+                        textViewDownload.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onMagazineClickListeners.onDownloadClicked(magazine);
+
+                            }
+                        });
+
                 }
                 imageViewCover.setOnClickListener(new View.OnClickListener() {
                     @Override
