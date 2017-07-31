@@ -149,9 +149,6 @@ public class ReaderActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
                 deleteMagazine(magazinesName);
                 return true;
-            case R.id.subscribe:
-                Toast.makeText(this, "Subscribe Click", Toast.LENGTH_SHORT).show();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

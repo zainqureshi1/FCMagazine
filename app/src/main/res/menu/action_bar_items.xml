@@ -10,8 +10,4 @@
         android:title="@string/delete"
         android:showAsAction="ifRoom" />
 
-    <item android:id="@+id/subscribe"
-        android:title="@string/subscribe"
-        android:showAsAction="never" />
-
 </menu>
