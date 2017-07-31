@@ -202,6 +202,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
 
 
                 if(magazine.isDownloaded()==true){
+                    textViewDownload.setVisibility(View.VISIBLE);
                     textViewDownload.setCompoundDrawables(null,null,null,null);
                     textViewDownload.setText("Available");
                     progressBarDownload.setVisibility(View.GONE);
@@ -214,6 +215,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                     });*/
                 }else if(magazine.getCurrentMagazinePages()>0){
                     int magazineProgress = magazine.getCurrentMagazinePages();
+                    textViewDownload.setVisibility(View.GONE);
                     progressBarDownload.setVisibility(View.VISIBLE);
                     progressBarDownload.setProgress(magazineProgress);
                 }else {

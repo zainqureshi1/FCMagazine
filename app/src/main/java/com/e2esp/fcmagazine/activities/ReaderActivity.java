@@ -131,7 +131,7 @@ public class ReaderActivity extends AppCompatActivity {
         magazineName.setText(magazines.getName());
 
         magazineName.setTextColor(Color.parseColor("#000000"));
-        magazineName.setTextSize(24);
+        //magazineName.setTextSize(24);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         actionBar.setCustomView(magazineName);

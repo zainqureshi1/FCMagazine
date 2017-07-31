@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,12 +15,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -70,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
     private Animation animationTitleOut;
     private int coverPagesInStorage;
 
+    File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+    File magDir = new File(dropboxDir, "Cover Pages");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +104,50 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.subscribe_action_bar, menu);
+
+        setActionBar();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setActionBar() {
+
+        ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle(magazines.getName());
+
+        TextView magazineName = new TextView(MainActivity.this);
+
+        magazineName.setText(getString(R.string.app_name));
+
+        magazineName.setTextColor(Color.parseColor("#000000"));
+        //magazineName.setTextSize(24);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        actionBar.setCustomView(magazineName);
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
+        actionBar.show();
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Take appropriate action for each action item click
+        switch (item.getItemId()) {
+            case R.id.subscribe:
+                Toast.makeText(this, "Subscribe", Toast.LENGTH_SHORT).show();
+                //deleteMagazine(magazinesName);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 
     private void createDirs() {
 
@@ -123,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 if (result == 0) {
                     Log.d("Error finding list ", "Error finding list");
                     if(coverPagesInStorage > 0){
+                        loadFromStorage();
                         loadCoverPages();
                     }//inner if condition
                     else{
@@ -199,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDownloadComplete(File result) {
                     Log.d("Download Complete", "onDownloadComplete: " +result);
+                    loadFromStorage();
                     loadCoverPages();
                 }
 
@@ -212,18 +267,17 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else{
+            loadFromStorage();
             loadCoverPages();
         }
         //magazineRecyclerAdapter.notifyDataSetChanged();
 
     }
 
-    private void loadCoverPages() {
+    public void loadFromStorage(){
 
-
-
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
-        File magDir = new File(dropboxDir, "Cover Pages");
+        /*File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        File magDir = new File(dropboxDir, "Cover Pages");*/
         magazinesListLatest.clear();
 
         for (File file:magDir.listFiles()){
@@ -263,6 +317,54 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void loadCoverPages() {
+
+
+
+        /*File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        File magDir = new File(dropboxDir, "Cover Pages");
+        magazinesListLatest.clear();
+
+        for (File file:magDir.listFiles()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            //get name of file(Cover Pages)
+            String magazineFilePath = file.getName();
+            //remove the dot jpg extension
+            String magazineName = magazineFilePath.substring(0, magazineFilePath.lastIndexOf("."));
+
+            String convertToDate = magazineName;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
+
+            Date date = null;
+            try {
+                date = dateFormat.parse(convertToDate);
+                //Toast.makeText(this, "Covert to date" +date, Toast.LENGTH_LONG).show();
+                //return dateFormat.format(date);
+            }
+            catch(ParseException pe) {
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                //return "Date";
+            }
+
+            magazinesListLatest.add(new Magazines(magazineName, myBitmap,date,false,0,0));
+
+
+        }//for loop end
+
+
+        Collections.sort(magazinesListLatest, new Comparator<Magazines>() {
+            @Override
+            public int compare(Magazines o2, Magazines o1) {
+                if (o1.getDate() == null || o2.getDate() == null)
+                    return 0;
+                return o1.getDate().compareTo(o2.getDate());
+
+            }
+        });*/
 
         for(File magazineFiles:dropboxDir.listFiles()){
 

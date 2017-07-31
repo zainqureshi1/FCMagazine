@@ -7,16 +7,16 @@
     android:background="@color/white"
     tools:context="com.e2esp.fcmagazine.activities.MainActivity" >
 
-    <include
+   <!-- <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/magazine_header_layout"
-        android:id="@+id/include" />
+        android:id="@+id/include" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewMagazines"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/include" />
+         />
 
 </RelativeLayout>

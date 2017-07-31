@@ -20,8 +20,7 @@
             android:theme="@style/TransparentTheme" />
         <activity
             android:name="com.e2esp.fcmagazine.activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
