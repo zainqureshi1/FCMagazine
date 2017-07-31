@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
-
+<!--
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
         android:textSize="@dimen/text_size_medium"
         android:textColor="@color/black"
         android:orientation="horizontal"
-        android:background="#dcdcdc" />
+        android:background="#dcdcdc" />-->
 
     <HorizontalScrollView
         android:id="@+id/scrollViewThumbnailsContainer"
@@ -54,10 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/tile"
-        android:layout_margin="40dp"
-        android:paddingTop="10dp"
         android:visibility="gone"
-        android:layout_below="@+id/textViewTitle"
         />
 
 

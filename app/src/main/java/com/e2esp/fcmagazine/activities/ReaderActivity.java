@@ -1,13 +1,20 @@
 package com.e2esp.fcmagazine.activities;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -63,6 +70,9 @@ public class ReaderActivity extends AppCompatActivity {
     private int screenWidth;
     private boolean overlayVisible = true;
 
+    File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+    File magazinesName = new File(dropboxDir, magazines.getName());
+
     private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
 
     private DbxRequestConfig config = null;
@@ -102,6 +112,68 @@ public class ReaderActivity extends AppCompatActivity {
         }, 100);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar_items, menu);
+
+        setActionBar();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setActionBar() {
+
+        ActionBar actionBar = getSupportActionBar();
+        //actionBar.setTitle(magazines.getName());
+
+        TextView magazineName = new TextView(ReaderActivity.this);
+
+        magazineName.setText(magazines.getName());
+
+        magazineName.setTextColor(Color.parseColor("#000000"));
+        magazineName.setTextSize(24);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        actionBar.setCustomView(magazineName);
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
+        actionBar.show();
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Take appropriate action for each action item click
+        switch (item.getItemId()) {
+            case R.id.delete:
+                //Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+                deleteMagazine(magazinesName);
+                return true;
+            case R.id.subscribe:
+                Toast.makeText(this, "Subscribe Click", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void deleteMagazine(File magazinesName){
+
+        if(magazinesName.isDirectory()){
+            for (File child : magazinesName.listFiles()) {
+                deleteMagazine(child);
+            }
+        }
+        magazinesName.delete();
+        magazines.setDownloaded(false);
+
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK,returnIntent);
+        finish();
+
+        //magazineName = magazineName.getAbsolutePath();
+    }
+
 
     private void setupView() {
         foldableListLayout = (FoldableListLayout) findViewById(R.id.foldableListLayout);
@@ -110,11 +182,12 @@ public class ReaderActivity extends AppCompatActivity {
         pageAdapter = new PageAdapter(this, pages, screenWidth);
         foldableListLayout.setAdapter(pageAdapter);
 
-        textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        /*selectedMagazine = (ImageView) findViewById(R.id.selectedMagazine);
+       /* textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        *//*selectedMagazine = (ImageView) findViewById(R.id.selectedMagazine);
 
-        selectedMagazine.setImageBitmap(magazines.getCover());*/
-        textViewTitle.setText(magazines.getName());
+        selectedMagazine.setImageBitmap(magazines.getCover());*//*
+        textViewTitle.setText(magazines.getName());*/
+
 
         scrollViewThumbnailsContainer = (HorizontalScrollView) findViewById(R.id.scrollViewThumbnailsContainer);
         linearLayoutThumbnailsContainer = (LinearLayout) findViewById(R.id.linearLayoutThumbnailsContainer);

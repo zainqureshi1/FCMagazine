@@ -34,18 +34,20 @@ public class GetMagazineList extends AsyncTask<Object, Object, Integer> {
     private final Callback mCallback;
     private final String magazineName;
     private Exception mException;
+    private final int magazinePagesInDirectory;
 
     public interface Callback {
-        void onDownloadComplete(Integer result);
+        void onDownloadComplete(Integer result,int magazinePagesInDirectory);
 
         void onError(Exception e);
     }
 
-    GetMagazineList(Context context, DbxClientV2 dbxClient, String magazineName, GetMagazineList.Callback callback) {
+    GetMagazineList(Context context, DbxClientV2 dbxClient, String magazineName,int magazinePagesInDirectory, GetMagazineList.Callback callback) {
         mContext = context;
         mDbxClient = dbxClient;
         mCallback = callback;
         this.magazineName = magazineName;
+        this.magazinePagesInDirectory= magazinePagesInDirectory;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class GetMagazineList extends AsyncTask<Object, Object, Integer> {
         if (mException != null) {
             mCallback.onError(mException);
         } else {
-            mCallback.onDownloadComplete(result);
+            mCallback.onDownloadComplete(result,magazinePagesInDirectory);
         }
         //downloadProgress.dismiss();
 

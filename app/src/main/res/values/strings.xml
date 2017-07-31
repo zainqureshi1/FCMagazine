@@ -20,4 +20,7 @@
 
     <string name="press_back_again_to_exit">Press BACK again to exit</string>
     <string name="download">Download</string>
+    <string name="delete">Delete</string>
+    <string name="feedback">Feedback</string>
+    <string name="subscribe">Subscribe</string>
 </resources>

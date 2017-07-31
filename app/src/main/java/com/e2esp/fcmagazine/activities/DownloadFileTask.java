@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static android.R.attr.content;
 import static android.R.attr.path;
@@ -33,24 +35,24 @@ import static com.e2esp.fcmagazine.activities.ReaderActivity.magazines;
  * Created by Ali on 7/18/2017.
  */
 
-public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
+public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
 
     private static ProgressDialog downloadProgress = null;
     private final Context mContext;
     private final DbxClientV2 mDbxClient;
     private final Callback mCallback;
     private Exception mException;
-    private final String magazineName;
+    private Magazines magazines;
 
     public interface Callback {
-        void onDownloadComplete(File result);
-
+        void onDownloadComplete();
+        void updateProgress();
         void onError(Exception e);
     }
 
-    DownloadFileTask(Context context, DbxClientV2 dbxClient,String magazineName, Callback callback) {
+    DownloadFileTask(Context context, DbxClientV2 dbxClient,Magazines magazines, Callback callback) {
         mContext = context;
-        this.magazineName = magazineName;
+        this.magazines = magazines;
         mDbxClient = dbxClient;
         mCallback = callback;
     }
@@ -58,29 +60,30 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
     @Override
     protected void onPreExecute() {
         //Log.i("Async-Example", "onPreExecute Called");
-        downloadProgress = new ProgressDialog(mContext);
+        /*downloadProgress = new ProgressDialog(mContext);
         //downloadProgress = ProgressDialog.show(mContext, "Wait", "Downloading Magazine",true);
         downloadProgress.setIndeterminate(false);
         downloadProgress.setMessage("Downloading Magazine");
         downloadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         downloadProgress.show();
-        super.onPreExecute();
+        super.onPreExecute();*/
 
     }
     @Override
-    protected void onPostExecute(File result) {
+    protected void onPostExecute(Void result) {
         super.onPostExecute(result);
         if (mException != null) {
             mCallback.onError(mException);
         } else {
-            mCallback.onDownloadComplete(result);
+            magazines.setDownloaded(true);
+            mCallback.onDownloadComplete();
         }
-        downloadProgress.dismiss();
+        //downloadProgress.dismiss();
 
     }
 
     @Override
-    protected File doInBackground(FileMetadata... params) {
+    protected Void doInBackground(FileMetadata... params) {
 
         File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
         if (!dropboxDir.isDirectory()) {
@@ -88,10 +91,12 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
         }
 
 
-        File magazinesDir = new File(dropboxDir, magazineName);
+        File magazinesDir = new File(dropboxDir, magazines.getName());
         if (!magazinesDir.isDirectory()) {
             magazinesDir.mkdir();
         }
+
+        String magazineName= magazines.getName();
 
         int i=0;
         Log.d("Magazines Name"," Magazines Name " + magazineName);
@@ -104,13 +109,26 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
         try {
             result = mDbxClient.files().listFolder(folder);
              total = result.getEntries().size();
-            publishProgress(i,total);
+            magazines.setCurrentMagazinePages(i);
+            magazines.setCurrentMagazinePages(total);
+
         } catch (DbxException e) {
             e.printStackTrace();
         }
 
         if(result != null) {
+
             while (true) {
+
+                Collections.sort(result.getEntries(), new Comparator<Metadata>() {
+                    @Override
+                    public int compare(Metadata o1, Metadata o2) {
+                        if (o1.getName() == null || o2.getName() == null)
+                            return 0;
+                        return o1.getName().compareTo(o2.getName());
+
+                    }
+                });
                 for (Metadata metadata : result.getEntries()) {
 
                     File path = new File(magazinesDir, metadata.getName());
@@ -135,8 +153,10 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
                     } finally {
                         try {
                             downloadFile.close();
+                            magazines.setCurrentMagazinePages(i);
                             publishProgress(i, total);
-                            downloadProgress.setProgress(i);
+                            //publishProgress(i, total);
+                            //downloadProgress.setProgress(i);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -158,17 +178,17 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, File> {
                 }
             }//while loop end
 
-            return null;
         }
-        return magazinesDir;
 
+        return null;
     }//function do in background end
 
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
 
-        downloadProgress.setProgress(values[0]);
-        downloadProgress.setMax(values[1]);
+        mCallback.updateProgress();
+        //downloadProgress.setProgress(values[0]);
+        //downloadProgress.setMax(values[1]);
     }
 }

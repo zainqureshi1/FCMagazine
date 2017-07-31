@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.e2esp.fcmagazine.R;
@@ -176,6 +177,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
         private ImageView imageViewCover;
         private TextView textViewName;
         private TextView textViewDownload;
+        private ProgressBar progressBarDownload;
 
         public VHItem(View itemView) {
             super(itemView);
@@ -183,6 +185,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
             imageViewCover = (ImageView) itemView.findViewById(R.id.imageViewCover);
             textViewName = (TextView) itemView.findViewById(R.id.textViewName);
             textViewDownload = (TextView) itemView.findViewById(R.id.textViewDownload);
+            progressBarDownload = (ProgressBar) itemView.findViewById(R.id.progressBarDownload);
         }
 
         public void bindView(final Magazines magazine) {
@@ -194,18 +197,46 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 imageViewCover.setImageBitmap(magazine.getCover());
                 String magazineName = magazine.getName();
                 textViewName.setText(magazineName);
-                textViewDownload.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onMagazineClickListeners.onDownloadClicked(magazine);
-                    }
-                });
+                progressBarDownload.setVisibility(View.GONE);
+
+
+
+                if(magazine.isDownloaded()==true){
+                    textViewDownload.setCompoundDrawables(null,null,null,null);
+                    textViewDownload.setText("Available");
+                    progressBarDownload.setVisibility(View.GONE);
+
+                    /*imageViewCover.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onMagazineClickListeners.onCoverPageClicked(magazine);
+                        }
+                    });*/
+                }else if(magazine.getCurrentMagazinePages()>0){
+                    int magazineProgress = magazine.getCurrentMagazinePages();
+                    progressBarDownload.setVisibility(View.VISIBLE);
+                    progressBarDownload.setProgress(magazineProgress);
+                }else {
+                    int downloadDrawable = R.drawable.icon_download;
+
+                    textViewDownload.setCompoundDrawablesWithIntrinsicBounds(0,0,downloadDrawable,0);
+                    textViewDownload.setText("Download");
+
+                    textViewDownload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onMagazineClickListeners.onDownloadClicked(magazine);
+                        }
+                    });
+                }
                 imageViewCover.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onMagazineClickListeners.onCoverPageClicked(magazine);
                     }
                 });
+
+
             }
         }
 

@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/imageViewCover"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:scaleType="fitCenter"
@@ -20,17 +20,16 @@
         android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/text_size_small"
         android:textColor="@color/black"
-        android:scaleType="fitCenter"
-        android:paddingLeft="50dp"
+        android:layout_marginTop="@dimen/margin_tiny"
         android:textStyle="bold"
+        android:layout_alignLeft="@+id/imageViewCover"
         android:layout_below="@+id/imageViewCover"/>
     <TextView
         android:id="@+id/textViewDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textViewName"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="49dp"
@@ -38,10 +37,19 @@
         android:textColor="@color/black"
         android:text="Download"
         android:layout_marginTop="5dp"
+        android:layout_alignRight="@+id/imageViewCover"
         android:layout_below="@+id/imageViewCover"
         android:drawableRight="@drawable/icon_download"
-
          />
+
+    <ProgressBar
+        android:id="@+id/progressBarDownload"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageViewCover"
+        android:layout_alignRight="@+id/imageViewCover"
+        android:layout_alignBottom="@+id/imageViewCover" />
 
 
 </RelativeLayout>

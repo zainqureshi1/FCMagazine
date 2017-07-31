@@ -17,12 +17,26 @@ public class Magazines  implements Parcelable {
     private Bitmap cover;
     private boolean spaceFiller;
     private boolean isDownloaded;
+    private int currentMagazinePages;
+    private int totalMagazinePages;
 
-    public Magazines(String name, Bitmap cover, Date date, boolean isDownloaded) {
+    public Magazines(String name, Date date, Bitmap cover, boolean isDownloaded, int currentMagazinePages, int totalMagazinePages) {
         this.name = name;
         this.date = date;
         this.cover = cover;
         this.isDownloaded = isDownloaded;
+        this.currentMagazinePages = currentMagazinePages;
+        this.totalMagazinePages = totalMagazinePages;
+    }
+
+
+    public Magazines(String name, Bitmap cover, Date date, boolean isDownloaded, int currentMagazinePages, int totalMagazinePages) {
+        this.name = name;
+        this.cover = cover;
+        this.date = date;
+        this.isDownloaded = isDownloaded;
+        this.currentMagazinePages = currentMagazinePages;
+        this.totalMagazinePages = totalMagazinePages;
     }
 
 
@@ -53,10 +67,10 @@ public class Magazines  implements Parcelable {
         return spaceFiller;
     }
 
-    public Magazines(String name, Bitmap myBitmapRecent) {
+   /* public Magazines(String name, Bitmap myBitmapRecent, Date date, boolean isDownloaded, int currentMagazinePages, int totalMagazinePages) {
         this.name = name;
         this.cover=myBitmapRecent;
-    }
+    }*/
 
     public Magazines(String name, Bitmap myBitmapRecent, Date date) {
         this.name = name;
@@ -111,4 +125,24 @@ public class Magazines  implements Parcelable {
     public void setDownloaded(boolean downloaded) {
         isDownloaded = downloaded;
     }
+
+    public int getCurrentMagazinePages() {
+
+        return currentMagazinePages;
+    }
+
+    public void setCurrentMagazinePages(int currentMagazinePages) {
+        this.currentMagazinePages = currentMagazinePages;
+    }
+
+
+
+    public int getTotalMagazinePages() {
+        return totalMagazinePages;
+    }
+
+    public void setTotalMagazinePages(int totalMagazinePages) {
+        this.totalMagazinePages = totalMagazinePages;
+    }
+
 }
