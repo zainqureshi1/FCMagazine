@@ -173,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDownloadComplete(Integer result) {
 
-                loadFromStorage();
-                loadCoverPages();
+                /*loadFromStorage();
+                loadCoverPages();*/
                 if (result == 0) {
                     Log.d("Error finding list ", "Error finding list");
                     if(coverPagesInStorage > 0){
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }//inner if condition
                     else{
-                        Toast.makeText(MainActivity.this, "Internet Connection required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Internet connection required to check updates", Toast.LENGTH_SHORT).show();
                     }
                 }else {
                     DownloadCoverPages(coverPagesInStorage, result);
@@ -228,6 +228,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewMagazines.setLayoutManager(layoutManagerMagazines);
         recyclerViewMagazines.setItemAnimator(new DefaultItemAnimator());
         recyclerViewMagazines.setAdapter(magazineRecyclerAdapter);
+
+        loadFromStorage();
+        loadCoverPages();
 
     }
 

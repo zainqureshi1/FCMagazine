@@ -215,6 +215,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 }else {
                     int downloadDrawable = R.drawable.icon_download;
 
+                    textViewDownload.setVisibility(View.VISIBLE);
                         textViewDownload.setCompoundDrawablesWithIntrinsicBounds(0, 0, downloadDrawable, 0);
                         textViewDownload.setText("Download");
 
