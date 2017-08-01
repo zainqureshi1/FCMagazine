@@ -50,7 +50,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
         void onError(Exception e);
     }
 
-    DownloadFileTask(Context context, DbxClientV2 dbxClient,Magazines magazines, Callback callback) {
+    public DownloadFileTask(Context context, DbxClientV2 dbxClient, Magazines magazines, Callback callback) {
         mContext = context;
         this.magazines = magazines;
         mDbxClient = dbxClient;

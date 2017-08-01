@@ -1,7 +1,10 @@
 package com.e2esp.fcmagazine.activities;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,6 +19,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -44,6 +48,7 @@ import com.e2esp.fcmagazine.adapters.MagazineRecyclerAdapters;
 import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
 import com.e2esp.fcmagazine.models.Magazines;
 import com.e2esp.fcmagazine.utils.PermissionManager;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import io.fabric.sdk.android.Fabric;
 import java.io.File;
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private Animation animationTitleIn;
     private Animation animationTitleOut;
     private int coverPagesInStorage;
+    private static boolean isSubscribe = false;
 
     File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
     File magDir = new File(dropboxDir, "Cover Pages");
@@ -92,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGranted() {
 
+                //FirebaseMessaging.getInstance().subscribeToTopic("FC Magazine");
                 createDirs();
                 setupView();
                 //loadMagazines();
@@ -108,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.subscribe_action_bar, menu);
+        inflater.inflate(R.menu.subscribe_action_bar, menu);
 
         setActionBar();
         return super.onCreateOptionsMenu(menu);
@@ -139,12 +146,40 @@ public class MainActivity extends AppCompatActivity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.subscribe:
-                Toast.makeText(this, "Subscribe", Toast.LENGTH_SHORT).show();
+                //FirebaseMessaging.getInstance().subscribeToTopic("FC Magazine");
+                clickOnSubscribe();
+                //Toast.makeText(this, "Subscribe", Toast.LENGTH_SHORT).show();
                 //deleteMagazine(magazinesName);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void clickOnSubscribe(){
+
+        SharedPreferences subscribe=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = subscribe.edit();
+
+        isSubscribe = true;
+        editor.putBoolean("isSubscribe",isSubscribe);
+        editor.commit();
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage("Subscribe Successfully");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog subscribeDialog = builder1.create();
+        subscribeDialog.show();
     }
 
 

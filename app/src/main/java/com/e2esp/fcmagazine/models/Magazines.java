@@ -20,6 +20,8 @@ public class Magazines  implements Parcelable {
     private int currentMagazinePages;
     private int totalMagazinePages;
 
+
+
     public boolean isDownloading() {
         return isDownloading;
     }

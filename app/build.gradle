@@ -23,8 +23,8 @@ android {
         applicationId "com.e2esp.fcmagazine"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.4"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -41,20 +41,22 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:recyclerview-v7:25.1.1'
-    compile 'com.google.firebase:firebase-messaging:10.0.1'
-    compile 'com.alexvasilkov:android-commons:1.2.4'
-    compile 'com.alexvasilkov:foldable-layout:1.2.0'
-    compile 'com.github.chrisbanes:PhotoView:1.3.1'
-    testCompile 'junit:junit:4.12'
-    compile 'com.dropbox.core:dropbox-core-sdk:2.1.1'
     //compile 'jackson-core-2.6.1'
-    compile 'com.dropbox.core:dropbox-core-sdk:3.0.3'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
 
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:recyclerview-v7:25.1.1'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.alexvasilkov:android-commons:1.2.4'
+    compile 'com.alexvasilkov:foldable-layout:1.2.0'
+    compile 'com.github.chrisbanes:PhotoView:1.3.1'
+    compile 'com.dropbox.core:dropbox-core-sdk:3.0.3'
+    testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.google.gms.google-services'
