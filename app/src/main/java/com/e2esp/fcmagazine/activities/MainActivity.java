@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private Animation animationTitleIn;
     private Animation animationTitleOut;
     private int coverPagesInStorage;
-    private static boolean isSubscribe = false;
+    private static boolean isSubscribe;
 
     File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
     File magDir = new File(dropboxDir, "Cover Pages");
@@ -116,12 +116,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.subscribe_action_bar, menu);
-
-        setActionBar();
+        setActionBar(menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void setActionBar() {
+    public void setActionBar(Menu menu) {
 
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setTitle(magazines.getName());
@@ -137,6 +136,17 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setCustomView(magazineName);
 
         actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
+
+
+        SharedPreferences subscribeCheck=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
+        boolean subscribed = subscribeCheck.getBoolean("isSubscribe", false);
+        if(subscribed==true){
+            MenuItem subscribeItem = menu.findItem(R.id.subscribe);
+            subscribeItem.setTitle("Unsubscribe");
+        }else{
+            MenuItem subscribeItem = menu.findItem(R.id.subscribe);
+            subscribeItem.setTitle("Subscribe");
+        }
         actionBar.show();
 
     }
@@ -146,10 +156,17 @@ public class MainActivity extends AppCompatActivity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.subscribe:
-                //FirebaseMessaging.getInstance().subscribeToTopic("FC Magazine");
-                clickOnSubscribe();
-                //Toast.makeText(this, "Subscribe", Toast.LENGTH_SHORT).show();
-                //deleteMagazine(magazinesName);
+
+                if(item.getTitle().equals("Subscribe")) {
+                    FirebaseMessaging.getInstance().subscribeToTopic("FCMagazine");
+                    item.setTitle("Unsubscribed");
+                    clickOnSubscribe();
+                }else {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("FCMagazine");
+                    item.setTitle("Subscribe");
+                    unSubscribed();
+                }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -159,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
     public void clickOnSubscribe(){
 
         SharedPreferences subscribe=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
-
         SharedPreferences.Editor editor = subscribe.edit();
 
         isSubscribe = true;
@@ -167,7 +183,32 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-        builder1.setMessage("Subscribe Successfully");
+        builder1.setMessage("Thank you for subscribing. We will download future issues for you as soon as they are published.");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog subscribeDialog = builder1.create();
+        subscribeDialog.show();
+    }
+
+    private void unSubscribed(){
+
+
+        SharedPreferences subscribe=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = subscribe.edit();
+
+        isSubscribe = false;
+        editor.putBoolean("isSubscribe",isSubscribe);
+        editor.commit();
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage("You have unsubscribed from magazine updates. Magazine will no longer auto download when published.\u000BPlease subscribe again to get best experience. ");
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(

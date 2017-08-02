@@ -24,6 +24,8 @@ import com.e2esp.fcmagazine.models.Magazines;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 public class FirebaseMsgService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMsgService";
@@ -33,25 +35,29 @@ public class FirebaseMsgService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
         //It is optional
         Log.e(TAG, "From: " + remoteMessage.getFrom());
-        Log.e(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        //Log.e(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        Map<String, String> data = remoteMessage.getData();
+        String title = data.get("title");
 
-        SharedPreferences subscribeCheck=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
+        sendNotification(title);
+       /* SharedPreferences subscribeCheck=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
         boolean subscribed = subscribeCheck.getBoolean("isSubscribe", false);
 
         if (subscribed == true) {
             //Calling method to generate notification
-            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            sendNotification(title);
+            //sendNotification(title, remoteMessage.getNotification().getBody());
+
         }else {
 
             Log.d("Subscribe "," Notttt");
-        }
+        }*/
     }
 
     //This method is only generating push notification
-    private void sendNotification(String title, String messageBody) {
+    private void sendNotification(String title) {
 
         String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
 
@@ -68,13 +74,10 @@ public class FirebaseMsgService extends FirebaseMessagingService {
         }
 
         magazine = new Magazines(title, null, null);
-
         magazine.setName(title);
         magazine.setDownloading(true);
 
         notificationBuilder();
-
-        Integer notificationID = 100;
 
         DownloadFileTask downloadFile = new DownloadFileTask(this, client, magazine, new DownloadFileTask.Callback() {
 
@@ -83,21 +86,19 @@ public class FirebaseMsgService extends FirebaseMessagingService {
                 //magazine.setDownloading(false);
                 //magazineRecyclerAdapter.notifyDataSetChanged();
                 //loadCoverPages();
+                notificationManager.cancelAll();
             }
 
             @Override
             public void updateProgress() {
 
-
                 progressBar();
-
 
             }
 
             @Override
             public void onError(Exception e) {
 
-                //Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
         downloadFile.execute();
@@ -107,16 +108,11 @@ public class FirebaseMsgService extends FirebaseMessagingService {
 
     public void progressBar(){
 
-//Set notification information:
-
-
         notificationBuilder.setContentTitle("Magazine Downloading")
                 .setProgress(magazine.getTotalMagazinePages(), magazine.getCurrentMagazinePages(), false);
 
 //Send the notification:
         notificationManager.notify(0, notificationBuilder.build());
-
-
 
     }
 
@@ -128,9 +124,9 @@ public class FirebaseMsgService extends FirebaseMessagingService {
         notificationBuilder.setOngoing(true)
                 .setContentTitle("Magazine Downloading")
                 .setContentText("New Magazine avaialable").setSmallIcon(R.drawable.ic_notification)
-                .setProgress(0, 0, false);
+                .setProgress(0, 0, false)
+                .setPriority(Notification.PRIORITY_MAX);
 
-//Send the notification:
         Notification notification = notificationBuilder.build();
         notificationManager.notify(0, notification);
 
