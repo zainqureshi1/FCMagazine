@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
     private int coverPagesInStorage;
     private static boolean isSubscribe;
 
-    File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
-    File magDir = new File(dropboxDir, "Cover Pages");
+    File dropboxDir;
+    File magDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,22 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         //startActivity(new Intent(this, SplashActivity.class));
         setContentView(R.layout.activity_main);
-
-        PermissionManager.getInstance().checkPermissionRequest(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, 9, "Store Magazine Cover Pages", new PermissionManager.Callback() {
-            @Override
-            public void onGranted() {
-
-                //FirebaseMessaging.getInstance().subscribeToTopic("FC Magazine");
-                createDirs();
-                setupView();
-                //loadMagazines();
-                //createOverlayAnimations();
-            }
-            @Override
-            public void onDenied() {
-
-            }
-        });
+        createDirs();
+        setupView();
 
     }
 
@@ -227,13 +213,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void createDirs() {
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        dropboxDir = new File(getFilesDir(), "FC Magazine");
         if (!dropboxDir.isDirectory()) {
             dropboxDir.mkdir();
         }
-        File coverPagesDir = new File(dropboxDir, "Cover Pages");
-        if (!coverPagesDir.isDirectory()) {
-            coverPagesDir.mkdir();
+        magDir = new File(dropboxDir, "Cover Pages");
+        if (!magDir.isDirectory()) {
+            magDir.mkdir();
         }
     }
     private void setupView() {
@@ -277,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
         folderList.execute();
 
-        File dir = new File(Environment.getExternalStorageDirectory(), "FC Magazine/Cover Pages");
+        File dir = new File(getFilesDir(), "FC Magazine/Cover Pages");
         coverPagesInStorage = countFilesInDirectory(dir);
         //Toast.makeText(this, "Number of Cover Pages " +coverPagesInStorage, Toast.LENGTH_LONG).show();
 
@@ -358,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadFromStorage(){
 
-        /*File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        /*File dropboxDir = new File(getFilesDir(), "FC Magazine");
         File magDir = new File(dropboxDir, "Cover Pages");*/
         magazinesListLatest.clear();
 
@@ -509,6 +495,8 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 //Toast.makeText(this, "Result Ok Called", Toast.LENGTH_SHORT).show();
                 //loadCoverPages();
+                loadFromStorage();
+                loadCoverPages();
                 magazineRecyclerAdapter.notifyDataSetChanged();
             }
         }

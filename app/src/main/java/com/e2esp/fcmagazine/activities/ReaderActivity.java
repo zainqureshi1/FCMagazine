@@ -70,8 +70,11 @@ public class ReaderActivity extends AppCompatActivity {
     private int screenWidth;
     private boolean overlayVisible = true;
 
-    File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
-    File magazinesName = new File(dropboxDir, magazines.getName());
+    /*File dropboxDir = new File(getFilesDir(), "FC Magazine");
+    File magazinesName = new File(dropboxDir, magazines.getName());*/
+
+    File dropboxDir;
+    File magazinesName;
 
     private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
 
@@ -86,6 +89,9 @@ public class ReaderActivity extends AppCompatActivity {
 
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
+
+        dropboxDir = new File(getFilesDir(), "FC Magazine");
+        magazinesName = new File(dropboxDir, magazines.getName());
 
         //check magazine already downloaded or not
 
@@ -215,7 +221,7 @@ public class ReaderActivity extends AppCompatActivity {
     private void loadMagazine(){
         pages.clear();
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        File dropboxDir = new File(getFilesDir(), "FC Magazine");
         File magDir = new File(dropboxDir, magazines.getName());
 
         //Toast.makeText(this, "Show Magazine", Toast.LENGTH_SHORT).show();

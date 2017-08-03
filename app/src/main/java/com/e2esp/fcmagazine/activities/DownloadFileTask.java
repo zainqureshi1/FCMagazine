@@ -85,7 +85,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
     @Override
     protected Void doInBackground(FileMetadata... params) {
 
-        File dropboxDir = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+        File dropboxDir = new File(mContext.getFilesDir(), "FC Magazine");
         if (!dropboxDir.isDirectory()) {
             dropboxDir.mkdir();
         }
