@@ -70,10 +70,6 @@ public class ReaderActivity extends AppCompatActivity {
     private int screenWidth;
     private boolean overlayVisible = true;
 
-    /*File dropboxDir = new File(getFilesDir(), "FC Magazine");
-    File magazinesName = new File(dropboxDir, magazines.getName());*/
-
-    File dropboxDir;
     File magazinesName;
 
     private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
@@ -90,11 +86,7 @@ public class ReaderActivity extends AppCompatActivity {
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
 
-        dropboxDir = new File(getFilesDir(), "FC Magazine");
-        magazinesName = new File(dropboxDir, magazines.getName());
-
-        //check magazine already downloaded or not
-
+        magazinesName = new File(getFilesDir(), magazines.getName());
 
         if (magazines == null) {
             finish();
@@ -130,18 +122,12 @@ public class ReaderActivity extends AppCompatActivity {
     public void setActionBar() {
 
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle(magazines.getName());
-
         TextView magazineName = new TextView(ReaderActivity.this);
-
         magazineName.setText(magazines.getName());
-
         magazineName.setTextColor(Color.parseColor("#000000"));
         //magazineName.setTextSize(24);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
         actionBar.setCustomView(magazineName);
-
         actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
         actionBar.show();
 
@@ -152,7 +138,6 @@ public class ReaderActivity extends AppCompatActivity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.delete:
-                //Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
                 deleteMagazine(magazinesName);
                 return true;
             default:
@@ -185,17 +170,10 @@ public class ReaderActivity extends AppCompatActivity {
         pageAdapter = new PageAdapter(this, pages, screenWidth);
         foldableListLayout.setAdapter(pageAdapter);
 
-       /* textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        *//*selectedMagazine = (ImageView) findViewById(R.id.selectedMagazine);
-
-        selectedMagazine.setImageBitmap(magazines.getCover());*//*
-        textViewTitle.setText(magazines.getName());*/
-
 
         scrollViewThumbnailsContainer = (HorizontalScrollView) findViewById(R.id.scrollViewThumbnailsContainer);
         linearLayoutThumbnailsContainer = (LinearLayout) findViewById(R.id.linearLayoutThumbnailsContainer);
 
-        //progressBarLoading = (ProgressBar) findViewById(R.id.progressBarLoading);
         viewOverlayWaker = findViewById(R.id.viewOverlayWaker);
         viewOverlayWaker.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -221,10 +199,7 @@ public class ReaderActivity extends AppCompatActivity {
     private void loadMagazine(){
         pages.clear();
 
-        File dropboxDir = new File(getFilesDir(), "FC Magazine");
-        File magDir = new File(dropboxDir, magazines.getName());
-
-        //Toast.makeText(this, "Show Magazine", Toast.LENGTH_SHORT).show();
+        File magDir = new File(getFilesDir(), magazines.getName());
         File[] files = magDir.listFiles();
         Arrays.sort(files);
         int i = 0;
@@ -281,7 +256,6 @@ public class ReaderActivity extends AppCompatActivity {
 
     private void hideOverlay() {
         if (overlayVisible) {
-            //textViewTitle.startAnimation(animationTitleOut);
             linearLayoutThumbnailsContainer.startAnimation(animationThumbnailsOut);
             overlayVisible = false;
         }
@@ -289,7 +263,6 @@ public class ReaderActivity extends AppCompatActivity {
 
     private void showOverlay() {
         if (!overlayVisible) {
-            //textViewTitle.startAnimation(animationTitleIn);
             linearLayoutThumbnailsContainer.startAnimation(animationThumbnailsIn);
             overlayVisible = true;
         }

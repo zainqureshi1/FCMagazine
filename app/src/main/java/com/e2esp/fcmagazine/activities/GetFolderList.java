@@ -53,17 +53,12 @@ public class GetFolderList extends AsyncTask<Object, Object, Integer> {
         } else {
             mCallback.onDownloadComplete(result);
         }
-        //downloadProgress.dismiss();
 
     }
 
     @Override
     protected Integer doInBackground(Object... params) {
 
-
-        /*String magazinesName = magazines.getName();
-
-        if(magazinesName==null)*/
         String magazinesName = "/Cover Pages/";
 
         int count = 0;

@@ -15,10 +15,6 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.e2esp.fcmagazine.activities.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/TransparentTheme" />
-        <activity
             android:name="com.e2esp.fcmagazine.activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

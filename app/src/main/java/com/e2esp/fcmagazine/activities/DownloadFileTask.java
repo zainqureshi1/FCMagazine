@@ -85,13 +85,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
     @Override
     protected Void doInBackground(FileMetadata... params) {
 
-        File dropboxDir = new File(mContext.getFilesDir(), "FC Magazine");
-        if (!dropboxDir.isDirectory()) {
-            dropboxDir.mkdir();
-        }
-
-
-        File magazinesDir = new File(dropboxDir, magazines.getName());
+        File magazinesDir = new File(mContext.getFilesDir(), magazines.getName());
         if (!magazinesDir.isDirectory()) {
             magazinesDir.mkdir();
         }
@@ -107,9 +101,7 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
         //int total = result.getEntries().size();
         try {
             result = mDbxClient.files().listFolder(folder);
-             total = result.getEntries().size();/*
-            magazines.setCurrentMagazinePages(i);
-            magazines.setCurrentMagazinePages(total);*/
+             total = result.getEntries().size();
              magazines.setCurrentMagazinePages(i);
              magazines.setTotalMagazinePages(total);
             //publishProgress(i,total);
@@ -157,8 +149,6 @@ public class DownloadFileTask extends AsyncTask<FileMetadata ,Integer, Void> {
                             downloadFile.close();
                             magazines.setCurrentMagazinePages(i);
                             publishProgress(i, total);
-                            //publishProgress(i, total);
-                            //downloadProgress.setProgress(i);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }

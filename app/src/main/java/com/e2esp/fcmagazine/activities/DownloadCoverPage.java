@@ -80,7 +80,7 @@ public class DownloadCoverPage extends AsyncTask<FileMetadata, Void, File> {
 
 
         String folder_main = "FC Magazine/Cover Pages";
-        File dir = new File(mContext.getFilesDir(), folder_main);
+        File dir = new File(mContext.getFilesDir(), "Cover Pages");
         dir.mkdir();
         int i=1;
 

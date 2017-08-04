@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:725487244356:android:011501c54b35a374",
+        "mobilesdk_app_id": "1:725487244356:android:aea92cae98e60e8b",
         "android_client_info": {
-          "package_name": "com.e2esp.fcmagazine"
+          "package_name": "com.e2esp.fcmagazine.sample"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "725487244356-e2msqun6ci7bqsidjooortue3tg5k7qi.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.e2esp.fcmagazine",
-            "certificate_hash": "74b16e182909e8ec35c1b1030d1da2c640d2151a"
-          }
-        },
         {
           "client_id": "725487244356-4bt0175afdut4a6jo91qe4ecisjma970.apps.googleusercontent.com",
           "client_type": 3
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "725487244356-4bt0175afdut4a6jo91qe4ecisjma970.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

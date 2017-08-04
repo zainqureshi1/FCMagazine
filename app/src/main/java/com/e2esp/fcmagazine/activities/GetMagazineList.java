@@ -65,16 +65,11 @@ public class GetMagazineList extends AsyncTask<Object, Object, Integer> {
         } else {
             mCallback.onDownloadComplete(result,magazinePagesInDirectory);
         }
-        //downloadProgress.dismiss();
-
     }
 
     @Override
     protected Integer doInBackground(Object... params) {
 
-        //String folder = "/Cover Pages/";
-
-        //Toast.makeText(mContext, "Magazine Name " +magazinesName, Toast.LENGTH_SHORT).show();
         int count = 0;
         ListFolderResult result = null;
         try {

@@ -1,10 +1,12 @@
 package com.e2esp.fcmagazine.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,6 +20,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,8 +53,14 @@ import com.e2esp.fcmagazine.models.Magazines;
 import com.e2esp.fcmagazine.utils.PermissionManager;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.apache.commons.io.FileUtils;
+
 import io.fabric.sdk.android.Fabric;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
     private int coverPagesInStorage;
     private static boolean isSubscribe;
 
-    File dropboxDir;
     File magDir;
 
     @Override
@@ -91,11 +99,51 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //startActivity(new Intent(this, SplashActivity.class));
         setContentView(R.layout.activity_main);
+
+        boolean permissionCheck = PermissionManager.getInstance().hasPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if(permissionCheck==true) {
+
+            File externalStorage = new File(Environment.getExternalStorageDirectory(), "FC Magazine");
+            if (externalStorage.isDirectory()) {
+
+                File internalStorage = getFilesDir();
+                for (File file : externalStorage.listFiles()) {
+
+                    if (file.isDirectory()) {
+
+                            try {
+                                FileUtils.copyDirectoryToDirectory(file,internalStorage);
+
+                                deleteMagazine(file);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                    }//outer if end
+
+                }
+
+            }
+            deleteMagazine(externalStorage);
+
+        }
         createDirs();
         setupView();
 
+    }
+
+
+    public void deleteMagazine(File magazinesName) {
+
+        if (magazinesName.isDirectory()) {
+            for (File child : magazinesName.listFiles()) {
+                deleteMagazine(child);
+            }
+        }
+        magazinesName.delete();
     }
 
     @Override
@@ -109,20 +157,12 @@ public class MainActivity extends AppCompatActivity {
     public void setActionBar(Menu menu) {
 
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setTitle(magazines.getName());
-
         TextView magazineName = new TextView(MainActivity.this);
-
         magazineName.setText(getString(R.string.app_name));
-
         magazineName.setTextColor(Color.parseColor("#000000"));
-        //magazineName.setTextSize(24);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
         actionBar.setCustomView(magazineName);
-
         actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
-
 
         SharedPreferences subscribeCheck=getSharedPreferences("subscribeClick", Context.MODE_PRIVATE);
         boolean subscribed = subscribeCheck.getBoolean("isSubscribe", false);
@@ -210,25 +250,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void createDirs() {
 
-        dropboxDir = new File(getFilesDir(), "FC Magazine");
-        if (!dropboxDir.isDirectory()) {
-            dropboxDir.mkdir();
-        }
-        magDir = new File(dropboxDir, "Cover Pages");
+        magDir = new File(getFilesDir(), "Cover Pages");
         if (!magDir.isDirectory()) {
             magDir.mkdir();
         }
     }
     private void setupView() {
 
-
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
-        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
-
 
         GetFolderList folderList = new GetFolderList(MainActivity.this, client, new GetFolderList.Callback() {
 
@@ -240,8 +272,6 @@ public class MainActivity extends AppCompatActivity {
                 if (result == 0) {
                     Log.d("Error finding list ", "Error finding list");
                     if(coverPagesInStorage > 0){
-                        /*loadFromStorage();
-                        * loadCoverPages();*/
 
                     }//inner if condition
                     else{
@@ -263,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
         folderList.execute();
 
-        File dir = new File(getFilesDir(), "FC Magazine/Cover Pages");
+        File dir = new File(getFilesDir(), "Cover Pages");
         coverPagesInStorage = countFilesInDirectory(dir);
         //Toast.makeText(this, "Number of Cover Pages " +coverPagesInStorage, Toast.LENGTH_LONG).show();
 
@@ -344,8 +374,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadFromStorage(){
 
-        /*File dropboxDir = new File(getFilesDir(), "FC Magazine");
-        File magDir = new File(dropboxDir, "Cover Pages");*/
         magazinesListLatest.clear();
 
         for (File file:magDir.listFiles()){
@@ -362,12 +390,10 @@ public class MainActivity extends AppCompatActivity {
             Date date = null;
             try {
                 date = dateFormat.parse(convertToDate);
-                //Toast.makeText(this, "Covert to date" +date, Toast.LENGTH_LONG).show();
-                //return dateFormat.format(date);
+
             }
             catch(ParseException pe) {
                 Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                //return "Date";
             }
 
             magazinesListLatest.add(new Magazines(magazineName, myBitmap,date,false,0,0));
@@ -390,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadCoverPages() {
 
-        for(File magazineFiles:dropboxDir.listFiles()){
+        for(File magazineFiles:getFilesDir().listFiles()){
 
             String magazinesName = magazineFiles.getName();
             if(magazinesName.equals("Cover Pages")){
@@ -412,13 +438,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             if(result == 0){
                                                 Log.d("Magazine List","Magazine List");
-                                               /* if(magazinePagesInDirectory>0){
 
-                                                    downloadMagazine.setVisibility(View.GONE);
-                                                }else{
-                                                    //selectedMagazine.setVisibility(View.VISIBLE);
-                                                    downloadMagazine.setVisibility(View.VISIBLE);
-                                                }*/
                                             }
                                             else {
 
@@ -472,17 +492,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCoverPageClick(Magazines magazine){
 
-
         magazine.getName();
         if(magazine.isDownloaded()==true) {
-
             ReaderActivity.magazines = magazine;
-
             Intent intent = new Intent(this, ReaderActivity.class);
             startActivityForResult(intent,1);
 
         }
-
 
     }
 
@@ -493,8 +509,6 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode==1) {
 
             if (resultCode == RESULT_OK) {
-                //Toast.makeText(this, "Result Ok Called", Toast.LENGTH_SHORT).show();
-                //loadCoverPages();
                 loadFromStorage();
                 loadCoverPages();
                 magazineRecyclerAdapter.notifyDataSetChanged();
@@ -505,7 +519,6 @@ public class MainActivity extends AppCompatActivity {
     private void onDownloadClick(final Magazines magazine) {
 
         config = DbxRequestConfig.newBuilder("FC Magazine").build();
-        //DbxRequestConfig Config = DbxRequestConfig.newBuilder("MyApp/1.0").build();
         client = new DbxClientV2(config, ACCESS_TOKEN);
 
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
