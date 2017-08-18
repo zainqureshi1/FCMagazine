@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "725487244356",
-    "firebase_url": "https://fc-magazine.firebaseio.com",
-    "project_id": "fc-magazine",
-    "storage_bucket": "fc-magazine.appspot.com"
+    "project_number": "1044874358005",
+    "firebase_url": "https://fashion-central-mag.firebaseio.com",
+    "project_id": "fashion-central-mag",
+    "storage_bucket": "fashion-central-mag.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:725487244356:android:aea92cae98e60e8b",
+        "mobilesdk_app_id": "1:1044874358005:android:011501c54b35a374",
         "android_client_info": {
-          "package_name": "com.e2esp.fcmagazine.sample"
+          "package_name": "com.e2esp.fcmagazine"
         }
       },
       "oauth_client": [
         {
-          "client_id": "725487244356-4bt0175afdut4a6jo91qe4ecisjma970.apps.googleusercontent.com",
+          "client_id": "1044874358005-1n2tofpvb5qkm6etp99ni4lg0721i47p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD28c5-JK-6pbf9g_J2CBhJokNgRBH_Wdc"
+          "current_key": "AIzaSyBnXOjrmxZDJHpYioXWZ3hByt1UKQe4mk0"
         }
       ],
       "services": {
