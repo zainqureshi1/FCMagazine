@@ -18,9 +18,19 @@
     <string name="recent_issues">RECENT ISSUES</string>
     <string name="downloaded">DOWNLOADED</string>
 
-    <string name="press_back_again_to_exit">Press BACK again to exit</string>
-    <string name="download">Download</string>
-    <string name="delete">Delete</string>
-    <string name="feedback">Feedback</string>
     <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Unsubscribe</string>
+
+    <string name="delete">Delete</string>
+
+    <string name="please_download_magazine_first">Please download magazine first</string>
+
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="downloading_cover_pages">Downloading cover pages</string>
+
+    <string name="downloading_magazine">Downloading Magazine</string>
+
+    <string name="connect_to_internet">Connect to internet and try again</string>
+    <string name="press_back_again_to_exit">Press BACK again to exit</string>
+
 </resources>

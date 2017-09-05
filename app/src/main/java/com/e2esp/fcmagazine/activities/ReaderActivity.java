@@ -1,13 +1,9 @@
 package com.e2esp.fcmagazine.activities;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,18 +16,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.v2.DbxClientV2;
 import com.e2esp.fcmagazine.R;
 import com.e2esp.fcmagazine.adapters.PageAdapter;
-import com.e2esp.fcmagazine.models.Magazines;
+import com.e2esp.fcmagazine.models.Magazine;
 import com.e2esp.fcmagazine.views.foldable.FoldableListLayout;
 import com.e2esp.fcmagazine.models.Page;
 import com.e2esp.fcmagazine.utils.Consts;
@@ -41,27 +33,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 /**
  * Created by Zain on 2/10/2017.
  */
 
 public class ReaderActivity extends AppCompatActivity {
 
-    public static Magazines magazines;
+    public static Magazine magazine;
 
     private FoldableListLayout foldableListLayout;
     private ArrayList<Page> pages;
     private PageAdapter pageAdapter;
 
-    private TextView textViewTitle;
     private HorizontalScrollView scrollViewThumbnailsContainer;
     private LinearLayout linearLayoutThumbnailsContainer;
 
-    private View viewOverlayWaker;
-
-    private Animation animationTitleIn;
-    private Animation animationTitleOut;
     private Animation animationThumbnailsIn;
     private Animation animationThumbnailsOut;
 
@@ -70,30 +56,19 @@ public class ReaderActivity extends AppCompatActivity {
     private int screenWidth;
     private boolean overlayVisible = true;
 
-    File magazinesName;
-
-    private static final String ACCESS_TOKEN = "t3HP7BPiD2AAAAAAAAAAHzZCvsP_y-pkY1kv0PCAPSdxi13bKay5dwS0xQbRsWqE";
-
-    private DbxRequestConfig config = null;
-    DbxClientV2 client = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_reader);
 
-        config = DbxRequestConfig.newBuilder("FC Magazine").build();
-        client = new DbxClientV2(config, ACCESS_TOKEN);
-
-        magazinesName = new File(getFilesDir(), magazines.getName());
-
-        if (magazines == null) {
+        if (magazine == null) {
             finish();
             return;
         }
 
         screenWidth = Utility.getScreenSize(this).x;
+        setActionBar();
         setupView();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -110,58 +85,18 @@ public class ReaderActivity extends AppCompatActivity {
         }, 100);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar_items, menu);
-
-        setActionBar();
-        return super.onCreateOptionsMenu(menu);
-    }
-
     public void setActionBar() {
-
         ActionBar actionBar = getSupportActionBar();
-        TextView magazineName = new TextView(ReaderActivity.this);
-        magazineName.setText(magazines.getName());
-        magazineName.setTextColor(Color.parseColor("#000000"));
-        //magazineName.setTextSize(24);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(magazineName);
-        actionBar.setBackgroundDrawable(new ColorDrawable(0xffdcdcdc));
-        actionBar.show();
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Take appropriate action for each action item click
-        switch (item.getItemId()) {
-            case R.id.delete:
-                deleteMagazine(magazinesName);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (actionBar != null) {
+            TextView magazineName = new TextView(ReaderActivity.this);
+            magazineName.setText(magazine.getName());
+            magazineName.setTextColor(ContextCompat.getColor(this, R.color.black));
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(magazineName);
+            actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.gray)));
+            actionBar.show();
         }
     }
-
-    public void deleteMagazine(File magazinesName){
-
-        if(magazinesName.isDirectory()){
-            for (File child : magazinesName.listFiles()) {
-                deleteMagazine(child);
-            }
-        }
-        magazinesName.delete();
-        magazines.setDownloaded(false);
-
-        Intent returnIntent = new Intent();
-        setResult(RESULT_OK,returnIntent);
-        finish();
-
-        //magazineName = magazineName.getAbsolutePath();
-    }
-
 
     private void setupView() {
         foldableListLayout = (FoldableListLayout) findViewById(R.id.foldableListLayout);
@@ -170,12 +105,10 @@ public class ReaderActivity extends AppCompatActivity {
         pageAdapter = new PageAdapter(this, pages, screenWidth);
         foldableListLayout.setAdapter(pageAdapter);
 
-
         scrollViewThumbnailsContainer = (HorizontalScrollView) findViewById(R.id.scrollViewThumbnailsContainer);
         linearLayoutThumbnailsContainer = (LinearLayout) findViewById(R.id.linearLayoutThumbnailsContainer);
 
-        viewOverlayWaker = findViewById(R.id.viewOverlayWaker);
-        viewOverlayWaker.setOnTouchListener(new View.OnTouchListener() {
+        findViewById(R.id.viewOverlayWaker).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 showOverlay();
@@ -199,19 +132,17 @@ public class ReaderActivity extends AppCompatActivity {
     private void loadMagazine(){
         pages.clear();
 
-        File magDir = new File(getFilesDir(), magazines.getName());
+        File magDir = new File(getFilesDir(), magazine.getName());
         File[] files = magDir.listFiles();
         Arrays.sort(files);
         int i = 0;
-        for (File file : files){
-
+        for (File file : files) {
             String imagePath = file.getAbsolutePath();
             i++;
             pages.add(new Page(imagePath, i == selectedPage));
         }
 
         pageAdapter.notifyDataSetChanged();
-
     }
 
     private void loadThumbnails() {
@@ -237,8 +168,8 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void updateThumbnailsSelection() {
-        int colorSelected = getResources().getColor(R.color.soft_blue);
-        int colorUnselected = getResources().getColor(R.color.transparent);
+        int colorSelected = ContextCompat.getColor(this, R.color.soft_blue);
+        int colorUnselected = ContextCompat.getColor(this, R.color.transparent);
         int childCount = linearLayoutThumbnailsContainer.getChildCount();
         int pageCount = pages.size();
         for (int i = 0; i < childCount && i < pageCount; i++) {
@@ -248,8 +179,6 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void createOverlayAnimations() {
-        animationTitleIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_downwards);
-        animationTitleOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_upwards);
         animationThumbnailsIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_upwards);
         animationThumbnailsOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_downwards);
     }
@@ -307,6 +236,45 @@ public class ReaderActivity extends AppCompatActivity {
             hideOverlay();
         }
     };
+
+    public void deleteMagazine() {
+        File magazineDir = new File(getFilesDir(), magazine.getName());
+        deleteFile(magazineDir);
+        magazine.setDownloaded(false);
+
+        setResult(RESULT_FIRST_USER);
+        finish();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void deleteFile(File file) {
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
+                deleteFile(child);
+            }
+        }
+        file.delete();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.magazine_menu, menu);
+        setActionBar();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Take appropriate action for each action item click
+        switch (item.getItemId()) {
+            case R.id.delete:
+                deleteMagazine();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

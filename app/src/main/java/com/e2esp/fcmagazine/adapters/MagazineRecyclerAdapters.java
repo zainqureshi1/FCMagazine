@@ -12,8 +12,7 @@ import android.widget.TextView;
 
 import com.e2esp.fcmagazine.R;
 import com.e2esp.fcmagazine.interfaces.OnMagazineClickListener;
-import com.e2esp.fcmagazine.models.Magazines;
-import com.e2esp.fcmagazine.models.Magazines;
+import com.e2esp.fcmagazine.models.Magazine;
 
 import java.util.ArrayList;
 
@@ -31,31 +30,31 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<Magazines> magazinesListLatest;
-    private ArrayList<Magazines> magazinesListRecent;
-    private ArrayList<Magazines> magazinesListDownloaded;
+    private ArrayList<Magazine> magazineListLatest;
+    private ArrayList<Magazine> magazineListRecent;
+    private ArrayList<Magazine> magazineListDownloaded;
     private OnMagazineClickListener onMagazineClickListeners;
 
-    public MagazineRecyclerAdapters(Context context, ArrayList<Magazines> magazinesListLatest, ArrayList<Magazines> magazinesListRecent, ArrayList<Magazines> magazinesListDownloaded, OnMagazineClickListener onMagazineClickListeners) {
+    public MagazineRecyclerAdapters(Context context, ArrayList<Magazine> magazineListLatest, ArrayList<Magazine> magazineListRecent, ArrayList<Magazine> magazineListDownloaded, OnMagazineClickListener onMagazineClickListeners) {
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.magazinesListLatest = magazinesListLatest;
-        this.magazinesListRecent = magazinesListRecent;
-        this.magazinesListDownloaded = magazinesListDownloaded;
+        this.magazineListLatest = magazineListLatest;
+        this.magazineListRecent = magazineListRecent;
+        this.magazineListDownloaded = magazineListDownloaded;
         this.onMagazineClickListeners = onMagazineClickListeners;
     }
 
     @Override
     public int getItemCount() {
         int itemCount = 0;
-        if (magazinesListLatest.size() > 0) {
-            itemCount += magazinesListLatest.size() + 1;
+        if (magazineListLatest.size() > 0) {
+            itemCount += magazineListLatest.size() + 1;
         }
-        /*if (magazinesListRecent.size() > 0) {
-            itemCount += magazinesListRecent.size() + 1;
+        /*if (magazineListRecent.size() > 0) {
+            itemCount += magazineListRecent.size() + 1;
         }
-        if (magazinesListDownloaded.size() > 0) {
-            itemCount += magazinesListDownloaded.size() + 1;
+        if (magazineListDownloaded.size() > 0) {
+            itemCount += magazineListDownloaded.size() + 1;
         }*/
         return itemCount;
     }
@@ -64,35 +63,35 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
     public int getItemViewType(int position) {
         int headers = 0;
         int items = 0;
-        if (magazinesListLatest.size() > 0) {
+        if (magazineListLatest.size() > 0) {
             if (position == items + headers) {
                 return VIEW_TYPE_HEADER_LATEST;
             }
             headers++;
-            if (position < magazinesListLatest.size() + items + headers) {
+            if (position < magazineListLatest.size() + items + headers) {
                 return VIEW_TYPE_ITEM_LATEST_ISSUE;
             }
-            items += magazinesListLatest.size();
+            items += magazineListLatest.size();
         }
-        if (magazinesListRecent.size() > 0) {
+        if (magazineListRecent.size() > 0) {
             if (position == items + headers) {
                 return VIEW_TYPE_HEADER_RECENT;
             }
             headers++;
-            if (position < magazinesListRecent.size() + items + headers) {
+            if (position < magazineListRecent.size() + items + headers) {
                 return VIEW_TYPE_ITEM;
             }
-            items += magazinesListRecent.size();
+            items += magazineListRecent.size();
         }
-        if (magazinesListDownloaded.size() > 0) {
+        if (magazineListDownloaded.size() > 0) {
             if (position == items + headers) {
                 return VIEW_TYPE_HEADER_DOWNLOADED;
             }
             headers++;
-            if (position < magazinesListDownloaded.size() + items + headers) {
+            if (position < magazineListDownloaded.size() + items + headers) {
                 return VIEW_TYPE_ITEM;
             }
-            items += magazinesListDownloaded.size();
+            items += magazineListDownloaded.size();
         }
         return VIEW_TYPE_ITEM;
     }
@@ -133,41 +132,41 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int headers = 0;
         int items = 0;
-        if (magazinesListLatest.size() > 0) {
+        if (magazineListLatest.size() > 0) {
             if (position == items + headers) {
                 ((VHHeader) holder).bindView(context.getString(R.string.latest_issue));
                 return;
             }
             headers++;
-            if (position < magazinesListLatest.size() + items + headers) {
-                ((VHItem) holder).bindView(magazinesListLatest.get(position - items - headers));
+            if (position < magazineListLatest.size() + items + headers) {
+                ((VHItem) holder).bindView(magazineListLatest.get(position - items - headers));
                 return;
             }
-            items += magazinesListLatest.size();
+            items += magazineListLatest.size();
         }
-       /* if (magazinesListRecent.size() > 0) {
+       /* if (magazineListRecent.size() > 0) {
             if (position == items + headers) {
                 ((VHHeader) holder).bindView(context.getString(R.string.recent_issues));
                 return;
             }
             headers++;
-            if (position < magazinesListRecent.size() + items + headers) {
-                ((VHItem) holder).bindView(magazinesListRecent.get(position - items - headers));
+            if (position < magazineListRecent.size() + items + headers) {
+                ((VHItem) holder).bindView(magazineListRecent.get(position - items - headers));
                 return;
             }
-            items += magazinesListRecent.size();
+            items += magazineListRecent.size();
         }
-        if (magazinesListDownloaded.size() > 0) {
+        if (magazineListDownloaded.size() > 0) {
             if (position == items + headers) {
                 ((VHHeader) holder).bindView(context.getString(R.string.downloaded));
                 return;
             }
             headers++;
-            if (position < magazinesListDownloaded.size() + items + headers) {
-                ((VHItem) holder).bindView(magazinesListDownloaded.get(position - items - headers));
+            if (position < magazineListDownloaded.size() + items + headers) {
+                ((VHItem) holder).bindView(magazineListDownloaded.get(position - items - headers));
                 return;
             }
-            items += magazinesListDownloaded.size();
+            items += magazineListDownloaded.size();
         }*/
     }
 
@@ -188,7 +187,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
             progressBarDownload = (ProgressBar) itemView.findViewById(R.id.progressBarDownload);
         }
 
-        public void bindView(final Magazines magazine) {
+        public void bindView(final Magazine magazine) {
             if (magazine.isSpaceFiller()) {
                 imageViewCover.setVisibility(View.INVISIBLE);
                 textViewName.setVisibility(View.INVISIBLE);
@@ -202,7 +201,7 @@ public class MagazineRecyclerAdapters extends RecyclerView.Adapter<RecyclerView.
                 if(magazine.isDownloading()) {
                 textViewDownload.setVisibility(View.GONE);
                     progressBarDownload.setVisibility(View.VISIBLE);
-                    progressBarDownload.setProgress(magazine.getCurrentMagazinePages());
+                    progressBarDownload.setProgress(magazine.getDownloadedMagazinePages());
                     progressBarDownload.setMax(magazine.getTotalMagazinePages());
 
                 }else if(magazine.isDownloaded()==true){

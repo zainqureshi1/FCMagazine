@@ -4,17 +4,40 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.e2esp.fcmagazine.R;
 
 /**
  * Created by Zain on 1/30/2017.
  */
 
 public class Utility {
+
+    public static boolean isInternetConnected(Context context, boolean showErrorToast) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        if (!isConnected && showErrorToast) {
+            showToast(context, R.string.connect_to_internet);
+        }
+        return isConnected;
+    }
+
+    public static void showToast(Context context, int stringRes) {
+        showToast(context, context.getString(stringRes));
+    }
+
+    public static void showToast(Context context, String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
 
     public static int dpToPx(Context context, int dp) {
         Resources r = context.getResources();
